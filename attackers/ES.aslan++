@@ -1,0 +1,345 @@
+specification ES
+channel_model ACM
+
+entity Environment {
+
+	types
+		pincode < text;
+		cookie < text;
+		opid < text;
+		userrequest < text;
+		fixedString < text;
+		communication < text;
+		otp < text;
+
+	symbols
+		eic, eicapp, user, browser, idps, sps: agent;
+		
+		ch_B2IdPS, ch_IdPS2B: channel;
+		ch_U2B, ch_B2U: channel;
+		ch_U2EICApp, ch_EICApp2U: channel;
+		ch_EICApp2IdPS, ch_IdPS2EICApp: channel;
+		ch_EICApp2EIC, ch_EIC2EICApp: channel;
+		ch_B2SPS, ch_SPS2B: channel;
+		ch_U2EIC: channel;
+		
+		ch_B2IdPS_2, ch_IdPS2B_2: channel;
+		ch_U2B_2, ch_B2U_2: channel;
+		ch_U2EICApp_2, ch_EICApp2U_2: channel;
+		ch_EICApp2IdPS_2, ch_IdPS2EICApp_2: channel;
+		ch_EICApp2EIC_2, ch_EIC2EICApp_2: channel;
+		ch_B2SPS_2, ch_SPS2B_2: channel;
+		ch_U2EIC_2: channel;
+		
+		stringOK: fixedString;
+		request1, request2: userrequest;
+		useEIC: communication;
+		
+		userOwnComputer, userOwnSmartphone, userOwnEIC: fact;
+		
+		nonpublic pin: pincode;
+		
+	entity Session(EIC, EICApp, User, Browser, SPServer, IdPServer: agent, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC: channel, Request: userrequest, PIN: pincode) {
+	
+		entity User(Actor, Browser, EICApp, SPServer, IdPServer, EIC: agent, Ch_U2B, Ch_B2U, Ch_EICApp2U, Ch_U2EICApp, Ch_U2EIC: channel, Request: userrequest, PIN: pincode) {
+			
+			symbols
+				OpId: opid;
+				OTP: otp;
+		
+			body { % of User
+				if (userOwnComputer) {
+					Actor -Ch_U2B-> Browser: User_authn_to_SP:(Request);
+				}
+				
+				select {
+					on(Browser -Ch_B2U-> Actor: IdPServer):{
+						if (userOwnComputer) {
+							Actor -Ch_U2B-> Browser: Actor;
+						}
+						
+						select {
+							on(Browser -Ch_B2U-> Actor: ?OpId.IdPServer.SPServer.Actor):{
+								if (userOwnSmartphone) {
+									Actor -Ch_U2EICApp-> EICApp: OpId.IdPServer.SPServer.Actor;
+								}
+								
+								select {
+									on(EICApp -Ch_EICApp2U-> Actor: EICApp):{
+										if (userOwnSmartphone) {
+											Actor -Ch_U2EICApp-> EICApp: PIN;
+										}
+										
+										if (userOwnEIC) {
+											Actor -Ch_U2EIC-> EIC: useEIC;
+										}
+										
+										select {
+											on(EICApp -Ch_EICApp2U-> Actor: ?OTP & Browser -Ch_B2U-> Actor: Browser):{
+												if (userOwnComputer) {
+													Actor -Ch_U2B-> Browser: OTP;
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}		
+		}
+		
+		entity Browser(Actor, User, IdPServer, SPServer: agent, Ch_B2U, Ch_B2IdPS: channel) {
+			
+			symbols
+				Request: userrequest;
+				OpId: opid;
+				OTP: otp;
+				SPSessionCookie: cookie;
+				IdPSessionCookie: cookie;
+			
+			body { % of Browser
+				select {
+					on(User -Ch_U2B-> Actor: ?Request):{
+						Actor -Ch_B2SPS-> SPServer: Request;
+						
+						select {
+							on(SPServer -Ch_SPS2B-> Actor: Request.?SPSessionCookie):{
+								Actor -Ch_B2IdPS-> IdPServer: Request;
+								
+								select {
+									on(IdPServer -Ch_IdPS2B-> Actor: IdPServer.?IdPSessionCookie):{
+										Actor -Ch_B2U-> User: IdPServer;
+										
+										select {
+											on(User -Ch_U2B-> Actor: User):{
+												Actor -Ch_B2IdPS-> IdPServer: User.IdPSessionCookie;
+												
+												select {
+													on(IdPServer -Ch_IdPS2B-> Actor: ?OpId.IdPServer.SPServer.User):{
+														Actor -Ch_B2U-> User: OpId.IdPServer.SPServer.User;
+																
+														select {
+															on(IdPServer -Ch_IdPS2B-> Actor: IdPServer):{
+																Actor -Ch_B2U-> User: Actor;
+																
+																select {
+																	on(User -Ch_U2B-> Actor: ?OTP):{
+																		Actor -Ch_B2IdPS-> IdPServer: OpId.OTP.IdPSessionCookie;
+																		
+																		select {
+																			on(IdPServer -Ch_IdPS2B-> Actor: {IdPServer.User.SPServer}_inv(pk(IdPServer))):{
+																				Actor -Ch_B2SPS-> SPServer: {IdPServer.User.SPServer}_inv(pk(IdPServer)).SPSessionCookie;
+																			}
+																		}
+																	}
+																}
+															}
+														}			
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}		
+		}
+		
+		entity SPServer(Actor, Browser, IdPServer, User: agent, Ch_B2SPS, Ch_SPS2B: channel, Request: userrequest) {
+		
+			symbols
+				SPSessionCookie: cookie;
+			
+			body { % of SPServer
+				select {
+					on(Browser -Ch_B2SPS-> Actor: Request):{
+						SPSessionCookie := fresh();
+						Actor -Ch_SPS2B-> Browser: Request.SPSessionCookie;
+						
+						select {
+							on(Browser -Ch_B2SPS-> Actor: {IdPServer.User.Actor}_inv(pk(IdPServer)).SPSessionCookie):{
+								User_authn_to_SP:(Request) := Request;
+							}
+						}
+					}
+				}
+			}		
+		}
+		
+		entity IdPServer(Actor, EICApp, User, SPServer, Browser, EIC: agent, Ch_B2IdPS, Ch_EICApp2IdPS, Ch_IdPS2EICApp: channel) {
+			
+			symbols
+				OpId: opid;
+				Request: userrequest;
+				OTP: otp;
+				IdPSessionCookie: cookie;
+			
+			body { % of IdPServer
+				select {
+					on(Browser -Ch_B2IdPS-> Actor: ?Request):{
+						IdPSessionCookie := fresh();
+						OpId := fresh();
+						Actor -Ch_IdPS2B-> Browser: Actor.IdPSessionCookie;
+						
+						select {
+							on(Browser -Ch_B2IdPS-> Actor: User.IdPSessionCookie):{
+								Actor -Ch_IdPS2B-> Browser: OpId.Actor.SPServer.User;
+								
+								select {
+									on(EICApp -Ch_EICApp2IdPS-> Actor: OpId.{OpId.Actor.SPServer.User}_inv(pk(EIC))):{
+										OTP := fresh();
+										%iknows(OTP); 							% uncomment for SE
+										Actor -Ch_IdPS2EICApp-> EICApp: OTP;
+										Actor -Ch_IdPS2B-> Browser: Actor;
+										
+										select {
+											on(Browser -Ch_B2IdPS-> Actor: OpId.OTP.IdPSessionCookie):{
+												Actor -Ch_IdPS2B-> Browser: {Actor.User.SPServer}_inv(pk(Actor));
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}		
+		}
+		
+		entity EICApp(Actor, User, IdPServer, EIC: agent, Ch_EICApp2U, Ch_U2EICApp, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp: channel) {
+			
+			symbols
+				OpId: opid;
+				SPServer: agent;
+				PIN: pincode;
+				Request: userrequest;
+				OTP: otp;
+			
+			body { % of EICApp
+				select {
+					on(User -Ch_U2EICApp-> Actor: ?OpId.IdPServer.?SPServer.User):{					%% ADDED: STEP 11
+						Actor -Ch_EICApp2U-> User: Actor;
+						
+						select {
+							on(User -Ch_U2EICApp-> Actor: ?PIN):{
+								Actor -Ch_EICApp2EIC-> EIC: OpId.IdPServer.SPServer.User.PIN;
+								
+								select {
+									on(EIC -Ch_EIC2EICApp-> Actor: {OpId.IdPServer.SPServer.User}_inv(pk(EIC))):{
+										Actor -Ch_EICApp2IdPS-> IdPServer: OpId.{OpId.IdPServer.SPServer.User}_inv(pk(EIC));
+										
+										select {
+											on(IdPServer -Ch_IdPS2EICApp-> Actor: ?OTP):{
+												Actor -Ch_EICApp2U-> User: OTP;
+											}
+										}
+									}
+								}
+							} 
+						}
+					}
+				}
+			}
+		}
+		
+		entity EIC(Actor, EICApp, IdPServer, User: agent, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_U2EIC: channel, PIN: pincode) {
+			
+			symbols
+				OpId: opid;
+				SPServer: agent;
+			
+			body { % of EIC
+				select {
+					on(EICApp -Ch_EICApp2EIC-> Actor: ?OpId.IdPServer.?SPServer.User.PIN & User -Ch_U2EIC-> Actor: useEIC):{
+						Actor -Ch_EIC2EICApp-> EICApp: {OpId.IdPServer.SPServer.User}_inv(pk(Actor));
+					}
+				}
+			}
+		}
+		
+		body { % of Session
+
+			
+			%--- Attackers ---%
+			%--- Follow the instructions to make the attacker effective ---%
+			% PCT
+			authentic_on(Ch_U2B, User);					% comment out
+			%weakly_authentic(Ch_U2B);					% uncomment
+			% use the same channel ch_U2B in the two sessions below
+			% comment out userOwnComputer in Environment body
+			
+			% MDT
+			authentic_on(Ch_U2EICApp, User);			% comment out
+			%weakly_authentic(Ch_U2EICApp);				% uncomment
+			% use the same channel ch_U2EICApp in the two sessions below
+			% comment out userOwnSmartphone in Environment body
+			
+			% CT
+			authentic_on(Ch_U2EIC, User);				% comment out
+			%weakly_authentic(Ch_U2EIC);				% uncomment
+			% use the same channel ch_U2EIC in the two sessions below
+			% comment out userOwnEIC in Environment body
+			
+			% ES, SS
+			%confidential_to(Ch_U2EICApp, EICApp);		% comment out
+			%confidential_to(Ch_EICApp2U, User);			% comment out
+			%confidential_to(Ch_U2B, Browser);			% comment out
+			
+			% SE
+			%iknows(PIN);								% uncomment
+			% uncomment iknows(OTP) in IdPServer
+			% comment out confidential_to(Ch_U2B, Browser) in ES, SS
+			authentic_on(Ch_B2U, Browser);				% comment out
+			
+			% D
+			%iknows(PIN);								% uncomment
+			
+			% MB
+			% replace "browser" with "i" in one of the sessions below
+			
+			% MM
+			% replace "eicapp" with "i" in one of the sessions below
+			authentic_on(Ch_EICApp2U, EICApp);
+			authentic_on(Ch_EICApp2EIC, EICApp);
+			
+			%--- End attackers ---%
+			
+			% Channel properties
+			unilateral_conf_auth(Ch_B2IdPS, Ch_IdPS2B, IdPServer);
+			unilateral_conf_auth(Ch_B2SPS, Ch_SPS2B, SPServer);
+			unilateral_conf_auth(Ch_EICApp2IdPS, Ch_IdPS2EICApp, IdPServer);
+			unilateral_conf_auth(Ch_EICApp2EIC, Ch_EIC2EICApp, EIC);
+			link(Ch_U2B, Ch_B2U);
+			link(Ch_U2EICApp, Ch_EICApp2U);
+			
+			new User(User, Browser, EICApp, SPServer, IdPServer, EIC, Ch_U2B, Ch_B2U, Ch_EICApp2U, Ch_U2EICApp, Ch_U2EIC, Request, PIN);
+			new Browser(Browser, User, IdPServer, SPServer, Ch_B2U, Ch_B2IdPS);
+			new SPServer(SPServer, Browser, IdPServer, User, Ch_B2SPS, Ch_SPS2B, Request);
+			new IdPServer(IdPServer, EICApp, User, SPServer, Browser, EIC, Ch_B2IdPS, Ch_EICApp2IdPS, Ch_IdPS2EICApp);
+			new EICApp(EICApp, User, IdPServer, EIC, Ch_EICApp2U, Ch_U2EICApp, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp);
+			new EIC(EIC, EICApp, IdPServer, User, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_U2EIC, PIN);
+		}
+		
+		goals
+			User_authn_to_SP:(_) User *->> SPServer;
+
+	}
+	
+	body { % of Environment
+	
+		% Devices ownership conditions
+		userOwnComputer;			% comment out for PCT
+		userOwnSmartphone;			% comment out for MDT
+		userOwnEIC;					% comment out for CT
+			
+		% Session
+		new Session(eic, eicapp, user, browser, sps, idps, ch_B2IdPS, ch_IdPS2B, ch_U2B, ch_B2U, ch_U2EICApp, ch_EICApp2U, ch_EICApp2IdPS, ch_IdPS2EICApp, ch_EICApp2EIC, ch_EIC2EICApp, ch_B2SPS, ch_SPS2B, ch_U2EIC, request1, pin);
+		new Session(eic, eicapp, user, browser, sps, idps, ch_B2IdPS_2, ch_IdPS2B_2, ch_U2B_2, ch_B2U_2, ch_U2EICApp_2, ch_EICApp2U_2, ch_EICApp2IdPS_2, ch_IdPS2EICApp_2, ch_EICApp2EIC_2, ch_EIC2EICApp_2, ch_B2SPS_2, ch_SPS2B_2, ch_U2EIC_2, request2, pin);
+	
+	}
+}

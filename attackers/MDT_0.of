@@ -1,0 +1,63 @@
+INPUT mdt.aslan
+SUMMARY NO_ATTACK_FOUND
+DETAILS
+  STRONGLY_TYPED_MODEL
+  BOUNDED_NUMBER_OF_SESSIONS
+  BOUNDED_SEARCH_DEPTH
+  BOUNDED_MESSAGE_DEPTH
+
+BACKEND SATMC VERSION 3.5.7_beta_(November_2014)
+
+COMMENTS
+  SATMC does not allow the intruder to generate fresh terms.
+  As a consequence attacks based on such an ability are not
+  reported.  To partially overcome this, please extend the
+  initial intruder knowledge with suitable constants.
+
+  SATMC stopped because the current step is 150 per cent of 
+  graphLeveledOff step, If you want to disable this empiric 
+  stop condition, please, run again SATMC using the option: 
+  --no_empiric_stop_cond. If you want to change the 
+  percentage rate, please use the option: 
+  --empiric_stop_cond=PERCENTAGE 
+
+
+
+
+STATISTICS TIME 49050 ms
+  upperBoundReached         true      boolean
+  graphLeveledOff           21        steps
+  satSolver                 minisat   solver
+  maxStepsNumber            100       steps
+  stepsNumber               31        steps
+  atomsNumber               0         atoms
+  clausesNumber             0         clauses
+  encodingTime              1.562     seconds
+  solvingTime               0         seconds
+  if2sateCompilationTime    0.297     seconds
+
+UNUSED:
+{ decompose_10,
+  decompose_14,
+  decompose_15,
+  decompose_17,
+  decompose_18,
+  decompose_19,
+  decompose_7,
+  decompose_8,
+  step_008_User__line_63,
+  step_010_User__line_69,
+  step_012_User__line_78,
+  step_013_User__line_79,
+  step_014_User__line_79,
+  step_025_Browser__line_124,
+  step_026_Browser__line_128,
+  step_027_Browser__line_132,
+  step_029_SPServer__line_165,
+  step_032_IdPServer__line_194,
+  step_033_IdPServer__line_201,
+  step_035_EICApp__line_229,
+  step_036_EICApp__line_233,
+  step_037_EICApp__line_237,
+  step_038_EIC__line_258 }
+

@@ -1,0 +1,981 @@
+% @specification(MDT)
+% @channel_model(ACM)
+% @connector_name(AVANTSSAR ASLan++ Connector)
+% @connector_version(1.3.9)
+% @connector_options(-opt LUMP -hc ALL -gas)
+
+section signature:
+
+	text > communication
+	text > cookie
+	text > fixedString
+	text > opid
+	text > otp
+	text > pincode
+	text > slabel
+	text > userrequest
+	authentic_on : channel * agent -> fact
+	bilateral_conf_auth : channel * channel * agent * agent -> fact
+	ch : agent * agent * slabel -> channel
+	child : nat * nat -> fact
+	confidential_to : channel * agent -> fact
+	defaultPseudonym : agent * nat -> public_key
+	dishonest : agent -> fact
+	hash : message -> message
+	link : channel * channel -> fact
+	pk : agent -> public_key
+	rcvd : agent * agent * message * channel -> fact
+	resilient : channel -> fact
+	sent : agent * agent * agent * message * channel -> fact
+	state_Browser : agent * nat * nat * agent * agent * agent * channel * channel * userrequest * opid * otp * cookie * cookie -> fact
+	state_EIC : agent * nat * nat * agent * agent * agent * channel * channel * channel * pincode * opid * agent -> fact
+	state_EICApp : agent * nat * nat * agent * agent * agent * channel * channel * channel * channel * channel * channel * opid * agent * pincode * userrequest * otp -> fact
+	state_Environment : agent * nat * nat -> fact
+	state_IdPServer : agent * nat * nat * agent * agent * agent * agent * agent * channel * channel * channel * opid * userrequest * otp * cookie -> fact
+	state_SPServer : agent * nat * nat * agent * agent * agent * channel * channel * userrequest * cookie -> fact
+	state_Session : agent * nat * nat * agent * agent * agent * agent * agent * agent * channel * channel * channel * channel * channel * channel * channel * channel * channel * channel * channel * channel * channel * userrequest * pincode -> fact
+	state_User : agent * nat * nat * agent * agent * agent * agent * agent * channel * channel * channel * channel * channel * userrequest * pincode * opid * otp -> fact
+	succ : nat -> nat
+	unilateral_conf_auth : channel * channel * agent -> fact
+	weakly_authentic : channel -> fact
+	weakly_confidential : channel -> fact
+
+section types:
+
+	ACM_Ch : channel
+	ACM_Msg : message
+	ACM_OS : agent
+	ACM_RS : agent
+	ACM_Rcv : agent
+	AM : message
+	AR : agent
+	AW : agent
+	Actor : agent
+	Browser : agent
+	Ch_B2IdPS : channel
+	Ch_B2SPS : channel
+	Ch_B2U : channel
+	Ch_EIC2EICApp : channel
+	Ch_EICApp2EIC : channel
+	Ch_EICApp2IdPS : channel
+	Ch_EICApp2U : channel
+	Ch_IdPS2B : channel
+	Ch_IdPS2EICApp : channel
+	Ch_SPS2B : channel
+	Ch_U2B : channel
+	Ch_U2EIC : channel
+	Ch_U2EICApp : channel
+	EIC : agent
+	EICApp : agent
+	% @original_name(name=Actor)
+	E_S_Actor : agent
+	% @original_name(name=Actor)
+	E_S_B_Actor : agent
+	% @original_name(name=Ch_B2IdPS)
+	E_S_B_Ch_B2IdPS : channel
+	% @original_name(name=Ch_B2U)
+	E_S_B_Ch_B2U : channel
+	% @original_name(name=IID)
+	E_S_B_IID : nat
+	% @original_name(name=IdPServer)
+	E_S_B_IdPServer : agent
+	% @original_name(name=OTP)
+	E_S_B_OTP : otp
+	% @original_name(name=OTP; match=true)
+	E_S_B_OTP_1 : otp
+	% @original_name(name=OpId)
+	E_S_B_OpId : opid
+	% @original_name(name=OpId; match=true)
+	E_S_B_OpId_1 : opid
+	% @original_name(name=Request)
+	E_S_B_Request : userrequest
+	% @original_name(name=Request; match=true)
+	E_S_B_Request_1 : userrequest
+	% @original_name(name=SL)
+	E_S_B_SL : nat
+	% @original_name(name=SPServer)
+	E_S_B_SPServer : agent
+	% @original_name(name=User)
+	E_S_B_User : agent
+	% @original_name(name=Actor)
+	E_S_EICA_Actor : agent
+	% @original_name(name=Ch_EIC2EICApp)
+	E_S_EICA_Ch_EIC2EICApp : channel
+	% @original_name(name=Ch_EICApp2EIC)
+	E_S_EICA_Ch_EICApp2EIC : channel
+	% @original_name(name=Ch_EICApp2IdPS)
+	E_S_EICA_Ch_EICApp2IdPS : channel
+	% @original_name(name=Ch_EICApp2U)
+	E_S_EICA_Ch_EICApp2U : channel
+	% @original_name(name=Ch_IdPS2EICApp)
+	E_S_EICA_Ch_IdPS2EICApp : channel
+	% @original_name(name=Ch_U2EICApp)
+	E_S_EICA_Ch_U2EICApp : channel
+	% @original_name(name=EIC)
+	E_S_EICA_EIC : agent
+	% @original_name(name=IID)
+	E_S_EICA_IID : nat
+	% @original_name(name=IdPServer)
+	E_S_EICA_IdPServer : agent
+	% @original_name(name=OTP)
+	E_S_EICA_OTP : otp
+	% @original_name(name=OTP; match=true)
+	E_S_EICA_OTP_1 : otp
+	% @original_name(name=OpId)
+	E_S_EICA_OpId : opid
+	% @original_name(name=OpId; match=true)
+	E_S_EICA_OpId_1 : opid
+	% @original_name(name=PIN)
+	E_S_EICA_PIN : pincode
+	% @original_name(name=PIN; match=true)
+	E_S_EICA_PIN_1 : pincode
+	% @original_name(name=Request)
+	E_S_EICA_Request : userrequest
+	% @original_name(name=SL)
+	E_S_EICA_SL : nat
+	% @original_name(name=SPServer)
+	E_S_EICA_SPServer : agent
+	% @original_name(name=SPServer; match=true)
+	E_S_EICA_SPServer_1 : agent
+	% @original_name(name=User)
+	E_S_EICA_User : agent
+	% @original_name(name=Actor)
+	E_S_EIC_Actor : agent
+	% @original_name(name=Ch_EIC2EICApp)
+	E_S_EIC_Ch_EIC2EICApp : channel
+	% @original_name(name=Ch_EICApp2EIC)
+	E_S_EIC_Ch_EICApp2EIC : channel
+	% @original_name(name=Ch_U2EIC)
+	E_S_EIC_Ch_U2EIC : channel
+	% @original_name(name=EICApp)
+	E_S_EIC_EICApp : agent
+	% @original_name(name=IID)
+	E_S_EIC_IID : nat
+	% @original_name(name=IdPServer)
+	E_S_EIC_IdPServer : agent
+	% @original_name(name=OpId)
+	E_S_EIC_OpId : opid
+	% @original_name(name=OpId; match=true)
+	E_S_EIC_OpId_1 : opid
+	% @original_name(name=PIN)
+	E_S_EIC_PIN : pincode
+	% @original_name(name=SL)
+	E_S_EIC_SL : nat
+	% @original_name(name=SPServer)
+	E_S_EIC_SPServer : agent
+	% @original_name(name=SPServer; match=true)
+	E_S_EIC_SPServer_1 : agent
+	% @original_name(name=User)
+	E_S_EIC_User : agent
+	% @original_name(name=IID)
+	E_S_IID : nat
+	% @original_name(name=Actor)
+	E_S_IPS_Actor : agent
+	% @original_name(name=Browser)
+	E_S_IPS_Browser : agent
+	% @original_name(name=Ch_B2IdPS)
+	E_S_IPS_Ch_B2IdPS : channel
+	% @original_name(name=Ch_EICApp2IdPS)
+	E_S_IPS_Ch_EICApp2IdPS : channel
+	% @original_name(name=Ch_IdPS2EICApp)
+	E_S_IPS_Ch_IdPS2EICApp : channel
+	% @original_name(name=EIC)
+	E_S_IPS_EIC : agent
+	% @original_name(name=EICApp)
+	E_S_IPS_EICApp : agent
+	% @original_name(name=IID)
+	E_S_IPS_IID : nat
+	% @original_name(name=IdPSessionCookie)
+	E_S_IPS_IdPSessionCookie : cookie
+	% @original_name(name=IdPSessionCookie; fresh=true)
+	E_S_IPS_IdPSessionCookie_1 : cookie
+	% @original_name(name=OTP)
+	E_S_IPS_OTP : otp
+	% @original_name(name=OTP; fresh=true)
+	E_S_IPS_OTP_1 : otp
+	% @original_name(name=OpId)
+	E_S_IPS_OpId : opid
+	% @original_name(name=OpId; fresh=true)
+	E_S_IPS_OpId_1 : opid
+	% @original_name(name=Request)
+	E_S_IPS_Request : userrequest
+	% @original_name(name=Request; match=true)
+	E_S_IPS_Request_1 : userrequest
+	% @original_name(name=SL)
+	E_S_IPS_SL : nat
+	% @original_name(name=SPServer)
+	E_S_IPS_SPServer : agent
+	% @original_name(name=User)
+	E_S_IPS_User : agent
+	% @original_name(name=SL)
+	E_S_SL : nat
+	% @original_name(name=Actor)
+	E_S_SPS_Actor : agent
+	% @original_name(name=Browser)
+	E_S_SPS_Browser : agent
+	% @original_name(name=Ch_B2SPS)
+	E_S_SPS_Ch_B2SPS : channel
+	% @original_name(name=Ch_SPS2B)
+	E_S_SPS_Ch_SPS2B : channel
+	% @original_name(name=IID)
+	E_S_SPS_IID : nat
+	% @original_name(name=IdPServer)
+	E_S_SPS_IdPServer : agent
+	% @original_name(name=Request)
+	E_S_SPS_Request : userrequest
+	% @original_name(name=SL)
+	E_S_SPS_SL : nat
+	% @original_name(name=SPSessionCookie)
+	E_S_SPS_SPSessionCookie : cookie
+	% @original_name(name=SPSessionCookie; fresh=true)
+	E_S_SPS_SPSessionCookie_1 : cookie
+	% @original_name(name=User)
+	E_S_SPS_User : agent
+	% @original_name(name=Actor)
+	E_S_U_Actor : agent
+	% @original_name(name=Browser)
+	E_S_U_Browser : agent
+	% @original_name(name=Ch_B2U)
+	E_S_U_Ch_B2U : channel
+	% @original_name(name=Ch_EICApp2U)
+	E_S_U_Ch_EICApp2U : channel
+	% @original_name(name=Ch_U2B)
+	E_S_U_Ch_U2B : channel
+	% @original_name(name=Ch_U2EIC)
+	E_S_U_Ch_U2EIC : channel
+	% @original_name(name=Ch_U2EICApp)
+	E_S_U_Ch_U2EICApp : channel
+	% @original_name(name=EIC)
+	E_S_U_EIC : agent
+	% @original_name(name=EICApp)
+	E_S_U_EICApp : agent
+	% @original_name(name=IID)
+	E_S_U_IID : nat
+	% @original_name(name=IdPServer)
+	E_S_U_IdPServer : agent
+	% @original_name(name=PIN)
+	E_S_U_PIN : pincode
+	% @original_name(name=Request)
+	E_S_U_Request : userrequest
+	% @original_name(name=SL)
+	E_S_U_SL : nat
+	% @original_name(name=SPServer)
+	E_S_U_SPServer : agent
+	% @original_name(name=IID)
+	E_aUatSP_IID : nat
+	FM : message
+	FR : agent
+	FW : agent
+	Hash_arg_1 : message
+	IID : nat
+	IID1 : nat
+	IID2 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_1 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_2 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_3 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_4 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_5 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_6 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_7 : nat
+	% @original_name(name=IID; fresh=true)
+	IID_8 : nat
+	IdPServer : agent
+	IdPSessionCookie : cookie
+	% @original_name(name=IdPSessionCookie; match=true)
+	IdPSessionCookie_1 : cookie
+	OTP : otp
+	% @original_name(name=OTP; match=true)
+	OTP_1 : otp
+	OpId : opid
+	% @original_name(name=OpId; match=true)
+	OpId_1 : opid
+	PIN : pincode
+	Pk_arg_1 : agent
+	Request : userrequest
+	SL : nat
+	SPServer : agent
+	SPSessionCookie : cookie
+	% @original_name(name=SPSessionCookie; match=true)
+	SPSessionCookie_1 : cookie
+	Succ_arg_1 : nat
+	User : agent
+	auth : slabel
+	auth_User_authn_to_SP : protocol_id
+	browser : agent
+	ch_B2IdPS : channel
+	ch_B2IdPS_2 : channel
+	ch_B2SPS : channel
+	ch_B2SPS_2 : channel
+	ch_B2U : channel
+	ch_B2U_2 : channel
+	ch_EIC2EICApp : channel
+	ch_EIC2EICApp_2 : channel
+	ch_EICApp2EIC : channel
+	ch_EICApp2EIC_2 : channel
+	ch_EICApp2IdPS : channel
+	ch_EICApp2IdPS_2 : channel
+	ch_EICApp2U : channel
+	ch_EICApp2U_2 : channel
+	ch_IdPS2B : channel
+	ch_IdPS2B_2 : channel
+	ch_IdPS2EICApp : channel
+	ch_IdPS2EICApp_2 : channel
+	ch_SPS2B : channel
+	ch_SPS2B_2 : channel
+	ch_U2B : channel
+	ch_U2B_2 : channel
+	ch_U2EIC : channel
+	ch_U2EICApp : channel
+	ch_U2EICApp_2 : channel
+	ch_U2EIC_2 : channel
+	conf : slabel
+	dummy_agent_1 : agent
+	dummy_agent_2 : agent
+	dummy_agent_3 : agent
+	dummy_agent_4 : agent
+	dummy_cookie_1 : cookie
+	dummy_cookie_2 : cookie
+	dummy_cookie_3 : cookie
+	dummy_cookie_4 : cookie
+	dummy_nat : nat
+	dummy_opid_1 : opid
+	dummy_opid_2 : opid
+	dummy_opid_3 : opid
+	dummy_opid_4 : opid
+	dummy_opid_5 : opid
+	dummy_otp_1 : otp
+	dummy_otp_2 : otp
+	dummy_otp_3 : otp
+	dummy_otp_4 : otp
+	dummy_pincode_1 : pincode
+	dummy_userrequest_1 : userrequest
+	dummy_userrequest_2 : userrequest
+	dummy_userrequest_3 : userrequest
+	eic : agent
+	eicapp : agent
+	false : fact
+	fresh_User_authn_to_SP : protocol_id
+	idps : agent
+	pin : pincode
+	regular : slabel
+	request1 : userrequest
+	request2 : userrequest
+	res : slabel
+	res_auth : slabel
+	res_conf : slabel
+	res_sec : slabel
+	root : agent
+	sec : slabel
+	sps : agent
+	stringOK : fixedString
+	true : fact
+	useEIC : communication
+	user : agent
+	userOwnComputer : fact
+	userOwnEIC : fact
+	userOwnSmartphone : fact
+
+section inits:
+
+% @new_instance(new_entity=Environment; Actor=root; IID=0; SL=1)
+initial_state init :=
+	child(dummy_nat, 0).
+	dishonest(i).
+	iknows(0).
+	iknows(auth).
+	iknows(browser).
+	iknows(conf).
+	iknows(eic).
+	iknows(eicapp).
+	iknows(i).
+	iknows(idps).
+	iknows(inv(pk(i))).
+	iknows(regular).
+	iknows(request1).
+	iknows(request2).
+	iknows(res).
+	iknows(res_auth).
+	iknows(res_conf).
+	iknows(res_sec).
+	iknows(root).
+	iknows(sec).
+	iknows(sps).
+	iknows(stringOK).
+	iknows(useEIC).
+	iknows(user).
+	state_Environment(root, 0, 1).
+	true
+
+section hornClauses:
+
+hc public_pk(Pk_arg_1) :=
+	iknows(pk(Pk_arg_1)) :-
+		iknows(Pk_arg_1)
+
+hc public_hash(Hash_arg_1) :=
+	iknows(hash(Hash_arg_1)) :-
+		iknows(Hash_arg_1)
+
+hc public_succ(Succ_arg_1) :=
+	iknows(succ(Succ_arg_1)) :-
+		iknows(Succ_arg_1)
+
+hc inv_succ_1(Succ_arg_1) :=
+	iknows(Succ_arg_1) :-
+		iknows(succ(Succ_arg_1))
+
+section rules:
+
+%retract facts
+%sent(ACM_RS,ACM_OS,ACM_Rcv,ACM_Msg,ACM_Ch)
+%introduce facts
+%rcvd(ACM_Rcv,ACM_OS,ACM_Msg,ACM_Ch)
+step step_001_ACM(ACM_Ch, ACM_Msg, ACM_OS, ACM_RS, ACM_Rcv) :=
+	sent(ACM_RS, ACM_OS, ACM_Rcv, ACM_Msg, ACM_Ch)
+	=>
+	rcvd(ACM_Rcv, ACM_OS, ACM_Msg, ACM_Ch)
+
+% @introduce(entity=Environment; iid=IID; line=336; fact=userOwnComputer)
+% @introduce(entity=Environment; iid=IID; line=338; fact=userOwnEIC)
+% @new_instance(entity=Environment; iid=IID; line=341; new_entity=Session; Actor=dummy_agent_1; IID=IID_1; SL=1; EIC=eic; EICApp=eicapp; User=user; Browser=browser; SPServer=sps; IdPServer=idps; Ch_B2IdPS=ch_B2IdPS; Ch_IdPS2B=ch_IdPS2B; Ch_U2B=ch_U2B; Ch_B2U=ch_B2U; Ch_U2EICApp=ch_U2EICApp; Ch_EICApp2U=ch_EICApp2U; Ch_EICApp2IdPS=ch_EICApp2IdPS; Ch_IdPS2EICApp=ch_IdPS2EICApp; Ch_EICApp2EIC=ch_EICApp2EIC; Ch_EIC2EICApp=ch_EIC2EICApp; Ch_B2SPS=ch_B2SPS; Ch_SPS2B=ch_SPS2B; Ch_U2EIC=ch_U2EIC; Request=request1; PIN=pin)
+% @new_instance(entity=Environment; iid=IID; line=342; new_entity=Session; Actor=dummy_agent_2; IID=IID_2; SL=1; EIC=eic; EICApp=eicapp; User=user; Browser=browser; SPServer=sps; IdPServer=idps; Ch_B2IdPS=ch_B2IdPS_2; Ch_IdPS2B=ch_IdPS2B_2; Ch_U2B=ch_U2B_2; Ch_B2U=ch_B2U_2; Ch_U2EICApp=ch_U2EICApp; Ch_EICApp2U=ch_EICApp2U_2; Ch_EICApp2IdPS=ch_EICApp2IdPS_2; Ch_IdPS2EICApp=ch_IdPS2EICApp_2; Ch_EICApp2EIC=ch_EICApp2EIC_2; Ch_EIC2EICApp=ch_EIC2EICApp_2; Ch_B2SPS=ch_B2SPS_2; Ch_SPS2B=ch_SPS2B_2; Ch_U2EIC=ch_U2EIC_2; Request=request2; PIN=pin)
+% @step_label(entity=Environment; iid=IID; line=342; variable=SL; term=5)
+step step_002_Environment__line_336(Actor, IID, IID_1, IID_2) :=
+	state_Environment(Actor, IID, 1)
+	=[exists IID_1, IID_2]=>
+	child(IID, IID_1).
+	child(IID, IID_2).
+	state_Environment(Actor, IID, 5).
+	state_Session(dummy_agent_1, IID_1, 1, eic, eicapp, user, browser, sps, idps, ch_B2IdPS, ch_IdPS2B, ch_U2B, ch_B2U, ch_U2EICApp, ch_EICApp2U, ch_EICApp2IdPS, ch_IdPS2EICApp, ch_EICApp2EIC, ch_EIC2EICApp, ch_B2SPS, ch_SPS2B, ch_U2EIC, request1, pin).
+	state_Session(dummy_agent_2, IID_2, 1, eic, eicapp, user, browser, sps, idps, ch_B2IdPS_2, ch_IdPS2B_2, ch_U2B_2, ch_B2U_2, ch_U2EICApp, ch_EICApp2U_2, ch_EICApp2IdPS_2, ch_IdPS2EICApp_2, ch_EICApp2EIC_2, ch_EIC2EICApp_2, ch_B2SPS_2, ch_SPS2B_2, ch_U2EIC_2, request2, pin).
+	userOwnComputer.
+	userOwnEIC
+
+% @introduce(entity=Session; iid=E_S_IID; line=271; fact=authentic_on(Ch_U2B, User))
+% @introduce(entity=Session; iid=E_S_IID; line=278; fact=weakly_authentic(Ch_U2EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=283; fact=authentic_on(Ch_U2EIC, User))
+% @introduce(entity=Session; iid=E_S_IID; line=289; fact=confidential_to(Ch_U2EICApp, EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=290; fact=confidential_to(Ch_EICApp2U, User))
+% @introduce(entity=Session; iid=E_S_IID; line=291; fact=confidential_to(Ch_U2B, Browser))
+% @introduce(entity=Session; iid=E_S_IID; line=297; fact=authentic_on(Ch_B2U, Browser))
+% @introduce(entity=Session; iid=E_S_IID; line=307; fact=authentic_on(Ch_EICApp2U, EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=308; fact=authentic_on(Ch_EICApp2EIC, EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=313; fact=weakly_authentic(Ch_B2IdPS))
+% @introduce(entity=Session; iid=E_S_IID; line=313; fact=weakly_confidential(Ch_IdPS2B))
+% @introduce(entity=Session; iid=E_S_IID; line=313; fact=link(Ch_B2IdPS, Ch_IdPS2B))
+% @introduce(entity=Session; iid=E_S_IID; line=313; fact=confidential_to(Ch_B2IdPS, IdPServer))
+% @introduce(entity=Session; iid=E_S_IID; line=313; fact=authentic_on(Ch_IdPS2B, IdPServer))
+% @introduce(entity=Session; iid=E_S_IID; line=314; fact=weakly_authentic(Ch_B2SPS))
+% @introduce(entity=Session; iid=E_S_IID; line=314; fact=weakly_confidential(Ch_SPS2B))
+% @introduce(entity=Session; iid=E_S_IID; line=314; fact=link(Ch_B2SPS, Ch_SPS2B))
+% @introduce(entity=Session; iid=E_S_IID; line=314; fact=confidential_to(Ch_B2SPS, SPServer))
+% @introduce(entity=Session; iid=E_S_IID; line=314; fact=authentic_on(Ch_SPS2B, SPServer))
+% @introduce(entity=Session; iid=E_S_IID; line=315; fact=weakly_authentic(Ch_EICApp2IdPS))
+% @introduce(entity=Session; iid=E_S_IID; line=315; fact=weakly_confidential(Ch_IdPS2EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=315; fact=link(Ch_EICApp2IdPS, Ch_IdPS2EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=315; fact=confidential_to(Ch_EICApp2IdPS, IdPServer))
+% @introduce(entity=Session; iid=E_S_IID; line=315; fact=authentic_on(Ch_IdPS2EICApp, IdPServer))
+% @introduce(entity=Session; iid=E_S_IID; line=316; fact=weakly_authentic(Ch_EICApp2EIC))
+% @introduce(entity=Session; iid=E_S_IID; line=316; fact=weakly_confidential(Ch_EIC2EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=316; fact=link(Ch_EICApp2EIC, Ch_EIC2EICApp))
+% @introduce(entity=Session; iid=E_S_IID; line=316; fact=confidential_to(Ch_EICApp2EIC, EIC))
+% @introduce(entity=Session; iid=E_S_IID; line=316; fact=authentic_on(Ch_EIC2EICApp, EIC))
+% @introduce(entity=Session; iid=E_S_IID; line=317; fact=link(Ch_U2B, Ch_B2U))
+% @introduce(entity=Session; iid=E_S_IID; line=318; fact=link(Ch_U2EICApp, Ch_EICApp2U))
+% @new_instance(entity=Session; iid=E_S_IID; line=320; new_entity=User; Actor=User; IID=IID_3; SL=1; Browser=Browser; EICApp=EICApp; SPServer=SPServer; IdPServer=IdPServer; EIC=EIC; Ch_U2B=Ch_U2B; Ch_B2U=Ch_B2U; Ch_EICApp2U=Ch_EICApp2U; Ch_U2EICApp=Ch_U2EICApp; Ch_U2EIC=Ch_U2EIC; Request=Request; PIN=PIN; OpId=dummy_opid_1; OTP=dummy_otp_1)
+% @new_instance(entity=Session; iid=E_S_IID; line=321; new_entity=Browser; Actor=Browser; IID=IID_4; SL=1; User=User; IdPServer=IdPServer; SPServer=SPServer; Ch_B2U=Ch_B2U; Ch_B2IdPS=Ch_B2IdPS; Request=dummy_userrequest_1; OpId=dummy_opid_2; OTP=dummy_otp_2; SPSessionCookie=dummy_cookie_1; IdPSessionCookie=dummy_cookie_2)
+% @new_instance(entity=Session; iid=E_S_IID; line=322; new_entity=SPServer; Actor=SPServer; IID=IID_5; SL=1; Browser=Browser; IdPServer=IdPServer; User=User; Ch_B2SPS=Ch_B2SPS; Ch_SPS2B=Ch_SPS2B; Request=Request; SPSessionCookie=dummy_cookie_3)
+% @new_instance(entity=Session; iid=E_S_IID; line=323; new_entity=IdPServer; Actor=IdPServer; IID=IID_6; SL=1; EICApp=EICApp; User=User; SPServer=SPServer; Browser=Browser; EIC=EIC; Ch_B2IdPS=Ch_B2IdPS; Ch_EICApp2IdPS=Ch_EICApp2IdPS; Ch_IdPS2EICApp=Ch_IdPS2EICApp; OpId=dummy_opid_3; Request=dummy_userrequest_2; OTP=dummy_otp_3; IdPSessionCookie=dummy_cookie_4)
+% @new_instance(entity=Session; iid=E_S_IID; line=324; new_entity=EICApp; Actor=EICApp; IID=IID_7; SL=1; User=User; IdPServer=IdPServer; EIC=EIC; Ch_EICApp2U=Ch_EICApp2U; Ch_U2EICApp=Ch_U2EICApp; Ch_EICApp2IdPS=Ch_EICApp2IdPS; Ch_IdPS2EICApp=Ch_IdPS2EICApp; Ch_EICApp2EIC=Ch_EICApp2EIC; Ch_EIC2EICApp=Ch_EIC2EICApp; OpId=dummy_opid_4; SPServer=dummy_agent_3; PIN=dummy_pincode_1; Request=dummy_userrequest_3; OTP=dummy_otp_4)
+% @new_instance(entity=Session; iid=E_S_IID; line=325; new_entity=EIC; Actor=EIC; IID=IID_8; SL=1; EICApp=EICApp; IdPServer=IdPServer; User=User; Ch_EICApp2EIC=Ch_EICApp2EIC; Ch_EIC2EICApp=Ch_EIC2EICApp; Ch_U2EIC=Ch_U2EIC; PIN=PIN; OpId=dummy_opid_5; SPServer=dummy_agent_4)
+% @step_label(entity=Session; iid=E_S_IID; line=325; variable=SL; term=38)
+step step_003_Session__line_271(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_IID, IID_3, IID_4, IID_5, IID_6, IID_7, IID_8, IdPServer, PIN, Request, SPServer, User) :=
+	not(dishonest(E_S_Actor)).
+	state_Session(E_S_Actor, E_S_IID, 1, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=[exists IID_3, IID_4, IID_5, IID_6, IID_7, IID_8]=>
+	authentic_on(Ch_B2U, Browser).
+	authentic_on(Ch_EIC2EICApp, EIC).
+	authentic_on(Ch_EICApp2EIC, EICApp).
+	authentic_on(Ch_EICApp2U, EICApp).
+	authentic_on(Ch_IdPS2B, IdPServer).
+	authentic_on(Ch_IdPS2EICApp, IdPServer).
+	authentic_on(Ch_SPS2B, SPServer).
+	authentic_on(Ch_U2B, User).
+	authentic_on(Ch_U2EIC, User).
+	child(E_S_IID, IID_3).
+	child(E_S_IID, IID_4).
+	child(E_S_IID, IID_5).
+	child(E_S_IID, IID_6).
+	child(E_S_IID, IID_7).
+	child(E_S_IID, IID_8).
+	confidential_to(Ch_B2IdPS, IdPServer).
+	confidential_to(Ch_B2SPS, SPServer).
+	confidential_to(Ch_EICApp2EIC, EIC).
+	confidential_to(Ch_EICApp2IdPS, IdPServer).
+	confidential_to(Ch_EICApp2U, User).
+	confidential_to(Ch_U2B, Browser).
+	confidential_to(Ch_U2EICApp, EICApp).
+	link(Ch_B2IdPS, Ch_IdPS2B).
+	link(Ch_B2SPS, Ch_SPS2B).
+	link(Ch_EICApp2EIC, Ch_EIC2EICApp).
+	link(Ch_EICApp2IdPS, Ch_IdPS2EICApp).
+	link(Ch_U2B, Ch_B2U).
+	link(Ch_U2EICApp, Ch_EICApp2U).
+	state_Browser(Browser, IID_4, 1, User, IdPServer, SPServer, Ch_B2U, Ch_B2IdPS, dummy_userrequest_1, dummy_opid_2, dummy_otp_2, dummy_cookie_1, dummy_cookie_2).
+	state_EIC(EIC, IID_8, 1, EICApp, IdPServer, User, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_U2EIC, PIN, dummy_opid_5, dummy_agent_4).
+	state_EICApp(EICApp, IID_7, 1, User, IdPServer, EIC, Ch_EICApp2U, Ch_U2EICApp, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, dummy_opid_4, dummy_agent_3, dummy_pincode_1, dummy_userrequest_3, dummy_otp_4).
+	state_IdPServer(IdPServer, IID_6, 1, EICApp, User, SPServer, Browser, EIC, Ch_B2IdPS, Ch_EICApp2IdPS, Ch_IdPS2EICApp, dummy_opid_3, dummy_userrequest_2, dummy_otp_3, dummy_cookie_4).
+	state_SPServer(SPServer, IID_5, 1, Browser, IdPServer, User, Ch_B2SPS, Ch_SPS2B, Request, dummy_cookie_3).
+	state_Session(E_S_Actor, E_S_IID, 38, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN).
+	state_User(User, IID_3, 1, Browser, EICApp, SPServer, IdPServer, EIC, Ch_U2B, Ch_B2U, Ch_EICApp2U, Ch_U2EICApp, Ch_U2EIC, Request, PIN, dummy_opid_1, dummy_otp_1).
+	weakly_authentic(Ch_B2IdPS).
+	weakly_authentic(Ch_B2SPS).
+	weakly_authentic(Ch_EICApp2EIC).
+	weakly_authentic(Ch_EICApp2IdPS).
+	weakly_authentic(Ch_U2EICApp).
+	weakly_confidential(Ch_EIC2EICApp).
+	weakly_confidential(Ch_IdPS2B).
+	weakly_confidential(Ch_IdPS2EICApp).
+	weakly_confidential(Ch_SPS2B)
+
+% @guard(entity=User; iid=E_S_U_IID; line=51; test=userOwnComputer)
+% @communication(entity=User; iid=E_S_U_IID; line=52; sender=E_S_U_Actor; receiver=E_S_U_Browser; payload=E_S_U_Request; channel=E_S_U_Ch_U2B; fact=sent(E_S_U_Actor, E_S_U_Actor, E_S_U_Browser, E_S_U_Request, E_S_U_Ch_U2B); direction=send)
+% @introduce(entity=User; iid=E_S_U_IID; line=52; fact=witness(E_S_U_Actor, E_S_U_SPServer, auth_User_authn_to_SP, E_S_U_Request))
+% @step_label(entity=User; iid=E_S_U_IID; line=52; variable=SL; term=3)
+step step_004_User__line_51(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	not(dishonest(E_S_U_Actor)).
+	state_User(E_S_U_Actor, E_S_U_IID, 1, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnComputer
+	=>
+	sent(E_S_U_Actor, E_S_U_Actor, E_S_U_Browser, E_S_U_Request, E_S_U_Ch_U2B).
+	state_User(E_S_U_Actor, E_S_U_IID, 3, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnComputer.
+	witness(E_S_U_Actor, E_S_U_SPServer, auth_User_authn_to_SP, E_S_U_Request)
+
+% @communication_guard(entity=User; iid=E_S_U_IID; line=56; sender=E_S_U_Browser; receiver=E_S_U_Actor; payload=E_S_U_IdPServer; channel=E_S_U_Ch_B2U; fact=rcvd(E_S_U_Actor, E_S_U_Browser, E_S_U_IdPServer, E_S_U_Ch_B2U); direction=receive)
+% @step_label(entity=User; iid=E_S_U_IID; line=56; variable=SL; term=4)
+step step_005_User__line_56(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	rcvd(E_S_U_Actor, E_S_U_Browser, E_S_U_IdPServer, E_S_U_Ch_B2U).
+	state_User(E_S_U_Actor, E_S_U_IID, 3, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 4, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=57; test=userOwnComputer)
+% @communication(entity=User; iid=E_S_U_IID; line=58; sender=E_S_U_Actor; receiver=E_S_U_Browser; payload=E_S_U_Actor; channel=E_S_U_Ch_U2B; fact=sent(E_S_U_Actor, E_S_U_Actor, E_S_U_Browser, E_S_U_Actor, E_S_U_Ch_U2B); direction=send)
+% @step_label(entity=User; iid=E_S_U_IID; line=58; variable=SL; term=6)
+step step_006_User__line_57(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	state_User(E_S_U_Actor, E_S_U_IID, 4, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnComputer
+	=>
+	sent(E_S_U_Actor, E_S_U_Actor, E_S_U_Browser, E_S_U_Actor, E_S_U_Ch_U2B).
+	state_User(E_S_U_Actor, E_S_U_IID, 6, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnComputer
+
+% @communication_guard(entity=User; iid=E_S_U_IID; line=62; sender=E_S_U_Browser; receiver=E_S_U_Actor; payload=pair(OpId_1, pair(E_S_U_IdPServer, pair(E_S_U_SPServer, E_S_U_Actor))); channel=E_S_U_Ch_B2U; fact=rcvd(E_S_U_Actor, E_S_U_Browser, pair(OpId_1, pair(E_S_U_IdPServer, pair(E_S_U_SPServer, E_S_U_Actor))), E_S_U_Ch_B2U); direction=receive)
+% @match(entity=User; iid=E_S_U_IID; line=62; variable=OpId; term=OpId_1)
+% @step_label(entity=User; iid=E_S_U_IID; line=62; variable=SL; term=7)
+step step_007_User__line_62(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId, OpId_1) :=
+	rcvd(E_S_U_Actor, E_S_U_Browser, pair(OpId_1, pair(E_S_U_IdPServer, pair(E_S_U_SPServer, E_S_U_Actor))), E_S_U_Ch_B2U).
+	state_User(E_S_U_Actor, E_S_U_IID, 6, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 7, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId_1, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=63; test=userOwnSmartphone)
+% @communication(entity=User; iid=E_S_U_IID; line=64; sender=E_S_U_Actor; receiver=E_S_U_EICApp; payload=pair(OpId, pair(E_S_U_IdPServer, pair(E_S_U_SPServer, E_S_U_Actor))); channel=E_S_U_Ch_U2EICApp; fact=sent(E_S_U_Actor, E_S_U_Actor, E_S_U_EICApp, pair(OpId, pair(E_S_U_IdPServer, pair(E_S_U_SPServer, E_S_U_Actor))), E_S_U_Ch_U2EICApp); direction=send)
+% @step_label(entity=User; iid=E_S_U_IID; line=64; variable=SL; term=9)
+step step_008_User__line_63(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	state_User(E_S_U_Actor, E_S_U_IID, 7, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnSmartphone
+	=>
+	sent(E_S_U_Actor, E_S_U_Actor, E_S_U_EICApp, pair(OpId, pair(E_S_U_IdPServer, pair(E_S_U_SPServer, E_S_U_Actor))), E_S_U_Ch_U2EICApp).
+	state_User(E_S_U_Actor, E_S_U_IID, 9, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnSmartphone
+
+% @communication_guard(entity=User; iid=E_S_U_IID; line=68; sender=E_S_U_EICApp; receiver=E_S_U_Actor; payload=E_S_U_EICApp; channel=E_S_U_Ch_EICApp2U; fact=rcvd(E_S_U_Actor, E_S_U_EICApp, E_S_U_EICApp, E_S_U_Ch_EICApp2U); direction=receive)
+% @step_label(entity=User; iid=E_S_U_IID; line=68; variable=SL; term=10)
+step step_009_User__line_68(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	rcvd(E_S_U_Actor, E_S_U_EICApp, E_S_U_EICApp, E_S_U_Ch_EICApp2U).
+	state_User(E_S_U_Actor, E_S_U_IID, 9, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 10, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=69; test=userOwnSmartphone)
+% @communication(entity=User; iid=E_S_U_IID; line=70; sender=E_S_U_Actor; receiver=E_S_U_EICApp; payload=E_S_U_PIN; channel=E_S_U_Ch_U2EICApp; fact=sent(E_S_U_Actor, E_S_U_Actor, E_S_U_EICApp, E_S_U_PIN, E_S_U_Ch_U2EICApp); direction=send)
+% @step_label(entity=User; iid=E_S_U_IID; line=70; variable=SL; term=12)
+step step_010_User__line_69(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	state_User(E_S_U_Actor, E_S_U_IID, 10, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnSmartphone
+	=>
+	sent(E_S_U_Actor, E_S_U_Actor, E_S_U_EICApp, E_S_U_PIN, E_S_U_Ch_U2EICApp).
+	state_User(E_S_U_Actor, E_S_U_IID, 12, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnSmartphone
+
+% @guard(entity=User; iid=E_S_U_IID; line=73; test=userOwnEIC)
+% @communication(entity=User; iid=E_S_U_IID; line=74; sender=E_S_U_Actor; receiver=E_S_U_EIC; payload=useEIC; channel=E_S_U_Ch_U2EIC; fact=sent(E_S_U_Actor, E_S_U_Actor, E_S_U_EIC, useEIC, E_S_U_Ch_U2EIC); direction=send)
+% @step_label(entity=User; iid=E_S_U_IID; line=74; variable=SL; term=14)
+step step_011_User__line_73(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	state_User(E_S_U_Actor, E_S_U_IID, 12, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnEIC
+	=>
+	sent(E_S_U_Actor, E_S_U_Actor, E_S_U_EIC, useEIC, E_S_U_Ch_U2EIC).
+	state_User(E_S_U_Actor, E_S_U_IID, 14, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnEIC
+
+% @communication_guard(entity=User; iid=E_S_U_IID; line=78; sender=E_S_U_EICApp; receiver=E_S_U_Actor; payload=OTP_1; channel=E_S_U_Ch_EICApp2U; fact=rcvd(E_S_U_Actor, E_S_U_EICApp, OTP_1, E_S_U_Ch_EICApp2U); direction=receive)
+% @match(entity=User; iid=E_S_U_IID; line=78; variable=OTP; term=OTP_1)
+% @communication_guard(entity=User; iid=E_S_U_IID; line=78; sender=E_S_U_Browser; receiver=E_S_U_Actor; payload=E_S_U_Browser; channel=E_S_U_Ch_B2U; fact=rcvd(E_S_U_Actor, E_S_U_Browser, E_S_U_Browser, E_S_U_Ch_B2U); direction=receive)
+% @step_label(entity=User; iid=E_S_U_IID; line=78; variable=SL; term=15)
+step step_012_User__line_78(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OTP_1, OpId) :=
+	rcvd(E_S_U_Actor, E_S_U_Browser, E_S_U_Browser, E_S_U_Ch_B2U).
+	rcvd(E_S_U_Actor, E_S_U_EICApp, OTP_1, E_S_U_Ch_EICApp2U).
+	state_User(E_S_U_Actor, E_S_U_IID, 14, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 15, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP_1)
+
+% @guard(entity=User; iid=E_S_U_IID; line=79; test=userOwnComputer)
+% @communication(entity=User; iid=E_S_U_IID; line=80; sender=E_S_U_Actor; receiver=E_S_U_Browser; payload=OTP; channel=E_S_U_Ch_U2B; fact=sent(E_S_U_Actor, E_S_U_Actor, E_S_U_Browser, OTP, E_S_U_Ch_U2B); direction=send)
+% @step_label(entity=User; iid=E_S_U_IID; line=80; variable=SL; term=17)
+step step_013_User__line_79(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	state_User(E_S_U_Actor, E_S_U_IID, 15, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnComputer
+	=>
+	sent(E_S_U_Actor, E_S_U_Actor, E_S_U_Browser, OTP, E_S_U_Ch_U2B).
+	state_User(E_S_U_Actor, E_S_U_IID, 17, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP).
+	userOwnComputer
+
+% @guard(entity=User; iid=E_S_U_IID; line=79; test=not(userOwnComputer))
+% @step_label(entity=User; iid=E_S_U_IID; line=79; variable=SL; term=17)
+step step_014_User__line_79(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	not(userOwnComputer).
+	state_User(E_S_U_Actor, E_S_U_IID, 15, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 17, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=73; test=not(userOwnEIC))
+% @step_label(entity=User; iid=E_S_U_IID; line=73; variable=SL; term=14)
+step step_015_User__line_73(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	not(userOwnEIC).
+	state_User(E_S_U_Actor, E_S_U_IID, 12, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 14, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=69; test=not(userOwnSmartphone))
+% @step_label(entity=User; iid=E_S_U_IID; line=69; variable=SL; term=12)
+step step_016_User__line_69(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	not(userOwnSmartphone).
+	state_User(E_S_U_Actor, E_S_U_IID, 10, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 12, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=63; test=not(userOwnSmartphone))
+% @step_label(entity=User; iid=E_S_U_IID; line=63; variable=SL; term=9)
+step step_017_User__line_63(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	not(userOwnSmartphone).
+	state_User(E_S_U_Actor, E_S_U_IID, 7, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 9, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=57; test=not(userOwnComputer))
+% @step_label(entity=User; iid=E_S_U_IID; line=57; variable=SL; term=6)
+step step_018_User__line_57(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	not(userOwnComputer).
+	state_User(E_S_U_Actor, E_S_U_IID, 4, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 6, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @guard(entity=User; iid=E_S_U_IID; line=51; test=not(userOwnComputer))
+% @step_label(entity=User; iid=E_S_U_IID; line=51; variable=SL; term=3)
+step step_019_User__line_51(E_S_U_Actor, E_S_U_Browser, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2B, E_S_U_Ch_U2EIC, E_S_U_Ch_U2EICApp, E_S_U_EIC, E_S_U_EICApp, E_S_U_IID, E_S_U_IdPServer, E_S_U_PIN, E_S_U_Request, E_S_U_SPServer, OTP, OpId) :=
+	not(dishonest(E_S_U_Actor)).
+	not(userOwnComputer).
+	state_User(E_S_U_Actor, E_S_U_IID, 1, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+	=>
+	state_User(E_S_U_Actor, E_S_U_IID, 3, E_S_U_Browser, E_S_U_EICApp, E_S_U_SPServer, E_S_U_IdPServer, E_S_U_EIC, E_S_U_Ch_U2B, E_S_U_Ch_B2U, E_S_U_Ch_EICApp2U, E_S_U_Ch_U2EICApp, E_S_U_Ch_U2EIC, E_S_U_Request, E_S_U_PIN, OpId, OTP)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=104; sender=E_S_B_User; receiver=E_S_B_Actor; payload=E_S_B_Request_1; channel=Ch_U2B; fact=rcvd(E_S_B_Actor, E_S_B_User, E_S_B_Request_1, Ch_U2B); direction=receive)
+% @match(entity=Browser; iid=E_S_B_IID; line=104; variable=Request; term=E_S_B_Request_1)
+% @communication(entity=Browser; iid=E_S_B_IID; line=105; sender=E_S_B_Actor; receiver=E_S_B_SPServer; payload=E_S_B_Request_1; channel=Ch_B2SPS; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_SPServer, E_S_B_Request_1, Ch_B2SPS); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=105; variable=SL; term=3)
+step step_020_Browser__line_104(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OpId, E_S_B_Request, E_S_B_Request_1, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, PIN, Request, SPServer, SPSessionCookie, User) :=
+	child(E_S_IID, E_S_B_IID).
+	not(dishonest(E_S_B_Actor)).
+	rcvd(E_S_B_Actor, E_S_B_User, E_S_B_Request_1, Ch_U2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 1, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_SPServer, E_S_B_Request_1, Ch_B2SPS).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 3, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request_1, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=108; sender=E_S_B_SPServer; receiver=E_S_B_Actor; payload=pair(E_S_B_Request, SPSessionCookie_1); channel=Ch_SPS2B; fact=rcvd(E_S_B_Actor, E_S_B_SPServer, pair(E_S_B_Request, SPSessionCookie_1), Ch_SPS2B); direction=receive)
+% @match(entity=Browser; iid=E_S_B_IID; line=108; variable=SPSessionCookie; term=SPSessionCookie_1)
+% @communication(entity=Browser; iid=E_S_B_IID; line=109; sender=E_S_B_Actor; receiver=E_S_B_IdPServer; payload=E_S_B_Request; channel=E_S_B_Ch_B2IdPS; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_IdPServer, E_S_B_Request, E_S_B_Ch_B2IdPS); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=109; variable=SL; term=5)
+step step_021_Browser__line_108(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OpId, E_S_B_Request, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, PIN, Request, SPServer, SPSessionCookie, SPSessionCookie_1, User) :=
+	child(E_S_IID, E_S_B_IID).
+	rcvd(E_S_B_Actor, E_S_B_SPServer, pair(E_S_B_Request, SPSessionCookie_1), Ch_SPS2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 3, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_IdPServer, E_S_B_Request, E_S_B_Ch_B2IdPS).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 5, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie_1, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=112; sender=E_S_B_IdPServer; receiver=E_S_B_Actor; payload=pair(E_S_B_IdPServer, IdPSessionCookie_1); channel=Ch_IdPS2B; fact=rcvd(E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_IdPServer, IdPSessionCookie_1), Ch_IdPS2B); direction=receive)
+% @match(entity=Browser; iid=E_S_B_IID; line=112; variable=IdPSessionCookie; term=IdPSessionCookie_1)
+% @communication(entity=Browser; iid=E_S_B_IID; line=113; sender=E_S_B_Actor; receiver=E_S_B_User; payload=E_S_B_IdPServer; channel=E_S_B_Ch_B2U; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_User, E_S_B_IdPServer, E_S_B_Ch_B2U); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=113; variable=SL; term=7)
+step step_022_Browser__line_112(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OpId, E_S_B_Request, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, IdPSessionCookie_1, PIN, Request, SPServer, SPSessionCookie, User) :=
+	child(E_S_IID, E_S_B_IID).
+	rcvd(E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_IdPServer, IdPSessionCookie_1), Ch_IdPS2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 5, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_User, E_S_B_IdPServer, E_S_B_Ch_B2U).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 7, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie_1).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=116; sender=E_S_B_User; receiver=E_S_B_Actor; payload=E_S_B_User; channel=Ch_U2B; fact=rcvd(E_S_B_Actor, E_S_B_User, E_S_B_User, Ch_U2B); direction=receive)
+% @communication(entity=Browser; iid=E_S_B_IID; line=117; sender=E_S_B_Actor; receiver=E_S_B_IdPServer; payload=pair(E_S_B_User, IdPSessionCookie); channel=E_S_B_Ch_B2IdPS; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_User, IdPSessionCookie), E_S_B_Ch_B2IdPS); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=117; variable=SL; term=9)
+step step_023_Browser__line_116(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OpId, E_S_B_Request, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, PIN, Request, SPServer, SPSessionCookie, User) :=
+	child(E_S_IID, E_S_B_IID).
+	rcvd(E_S_B_Actor, E_S_B_User, E_S_B_User, Ch_U2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 7, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_User, IdPSessionCookie), E_S_B_Ch_B2IdPS).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 9, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=120; sender=E_S_B_IdPServer; receiver=E_S_B_Actor; payload=pair(E_S_B_OpId_1, pair(E_S_B_IdPServer, pair(E_S_B_SPServer, E_S_B_User))); channel=Ch_IdPS2B; fact=rcvd(E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_OpId_1, pair(E_S_B_IdPServer, pair(E_S_B_SPServer, E_S_B_User))), Ch_IdPS2B); direction=receive)
+% @match(entity=Browser; iid=E_S_B_IID; line=120; variable=OpId; term=E_S_B_OpId_1)
+% @communication(entity=Browser; iid=E_S_B_IID; line=121; sender=E_S_B_Actor; receiver=E_S_B_User; payload=pair(E_S_B_OpId_1, pair(E_S_B_IdPServer, pair(E_S_B_SPServer, E_S_B_User))); channel=E_S_B_Ch_B2U; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_User, pair(E_S_B_OpId_1, pair(E_S_B_IdPServer, pair(E_S_B_SPServer, E_S_B_User))), E_S_B_Ch_B2U); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=121; variable=SL; term=11)
+step step_024_Browser__line_120(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OpId, E_S_B_OpId_1, E_S_B_Request, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, PIN, Request, SPServer, SPSessionCookie, User) :=
+	child(E_S_IID, E_S_B_IID).
+	rcvd(E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_OpId_1, pair(E_S_B_IdPServer, pair(E_S_B_SPServer, E_S_B_User))), Ch_IdPS2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 9, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_User, pair(E_S_B_OpId_1, pair(E_S_B_IdPServer, pair(E_S_B_SPServer, E_S_B_User))), E_S_B_Ch_B2U).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 11, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId_1, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=124; sender=E_S_B_IdPServer; receiver=E_S_B_Actor; payload=E_S_B_IdPServer; channel=Ch_IdPS2B; fact=rcvd(E_S_B_Actor, E_S_B_IdPServer, E_S_B_IdPServer, Ch_IdPS2B); direction=receive)
+% @communication(entity=Browser; iid=E_S_B_IID; line=125; sender=E_S_B_Actor; receiver=E_S_B_User; payload=E_S_B_Actor; channel=E_S_B_Ch_B2U; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_User, E_S_B_Actor, E_S_B_Ch_B2U); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=125; variable=SL; term=13)
+step step_025_Browser__line_124(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OpId, E_S_B_Request, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, PIN, Request, SPServer, SPSessionCookie, User) :=
+	child(E_S_IID, E_S_B_IID).
+	rcvd(E_S_B_Actor, E_S_B_IdPServer, E_S_B_IdPServer, Ch_IdPS2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 11, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_User, E_S_B_Actor, E_S_B_Ch_B2U).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 13, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=128; sender=E_S_B_User; receiver=E_S_B_Actor; payload=E_S_B_OTP_1; channel=Ch_U2B; fact=rcvd(E_S_B_Actor, E_S_B_User, E_S_B_OTP_1, Ch_U2B); direction=receive)
+% @match(entity=Browser; iid=E_S_B_IID; line=128; variable=OTP; term=E_S_B_OTP_1)
+% @communication(entity=Browser; iid=E_S_B_IID; line=129; sender=E_S_B_Actor; receiver=E_S_B_IdPServer; payload=pair(E_S_B_OpId, pair(E_S_B_OTP_1, IdPSessionCookie)); channel=E_S_B_Ch_B2IdPS; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_OpId, pair(E_S_B_OTP_1, IdPSessionCookie)), E_S_B_Ch_B2IdPS); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=129; variable=SL; term=15)
+step step_026_Browser__line_128(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OTP_1, E_S_B_OpId, E_S_B_Request, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, PIN, Request, SPServer, SPSessionCookie, User) :=
+	child(E_S_IID, E_S_B_IID).
+	rcvd(E_S_B_Actor, E_S_B_User, E_S_B_OTP_1, Ch_U2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 13, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_IdPServer, pair(E_S_B_OpId, pair(E_S_B_OTP_1, IdPSessionCookie)), E_S_B_Ch_B2IdPS).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 15, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP_1, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=Browser; iid=E_S_B_IID; line=132; sender=E_S_B_IdPServer; receiver=E_S_B_Actor; payload=sign(inv(pk(E_S_B_IdPServer)), pair(E_S_B_IdPServer, pair(E_S_B_User, E_S_B_SPServer))); channel=Ch_IdPS2B; fact=rcvd(E_S_B_Actor, E_S_B_IdPServer, sign(inv(pk(E_S_B_IdPServer)), pair(E_S_B_IdPServer, pair(E_S_B_User, E_S_B_SPServer))), Ch_IdPS2B); direction=receive)
+% @communication(entity=Browser; iid=E_S_B_IID; line=133; sender=E_S_B_Actor; receiver=E_S_B_SPServer; payload=pair(sign(inv(pk(E_S_B_IdPServer)), pair(E_S_B_IdPServer, pair(E_S_B_User, E_S_B_SPServer))), SPSessionCookie); channel=Ch_B2SPS; fact=sent(E_S_B_Actor, E_S_B_Actor, E_S_B_SPServer, pair(sign(inv(pk(E_S_B_IdPServer)), pair(E_S_B_IdPServer, pair(E_S_B_User, E_S_B_SPServer))), SPSessionCookie), Ch_B2SPS); direction=send)
+% @step_label(entity=Browser; iid=E_S_B_IID; line=133; variable=SL; term=17)
+step step_027_Browser__line_132(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_B_Actor, E_S_B_Ch_B2IdPS, E_S_B_Ch_B2U, E_S_B_IID, E_S_B_IdPServer, E_S_B_OTP, E_S_B_OpId, E_S_B_Request, E_S_B_SPServer, E_S_B_User, E_S_IID, E_S_SL, IdPServer, IdPSessionCookie, PIN, Request, SPServer, SPSessionCookie, User) :=
+	child(E_S_IID, E_S_B_IID).
+	rcvd(E_S_B_Actor, E_S_B_IdPServer, sign(inv(pk(E_S_B_IdPServer)), pair(E_S_B_IdPServer, pair(E_S_B_User, E_S_B_SPServer))), Ch_IdPS2B).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 15, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_B_IID).
+	sent(E_S_B_Actor, E_S_B_Actor, E_S_B_SPServer, pair(sign(inv(pk(E_S_B_IdPServer)), pair(E_S_B_IdPServer, pair(E_S_B_User, E_S_B_SPServer))), SPSessionCookie), Ch_B2SPS).
+	state_Browser(E_S_B_Actor, E_S_B_IID, 17, E_S_B_User, E_S_B_IdPServer, E_S_B_SPServer, E_S_B_Ch_B2U, E_S_B_Ch_B2IdPS, E_S_B_Request, E_S_B_OpId, E_S_B_OTP, SPSessionCookie, IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=SPServer; iid=E_S_SPS_IID; line=160; sender=E_S_SPS_Browser; receiver=E_S_SPS_Actor; payload=E_S_SPS_Request; channel=E_S_SPS_Ch_B2SPS; fact=rcvd(E_S_SPS_Actor, E_S_SPS_Browser, E_S_SPS_Request, E_S_SPS_Ch_B2SPS); direction=receive)
+% @fresh(entity=SPServer; iid=E_S_SPS_IID; line=161; variable=SPSessionCookie; term=E_S_SPS_SPSessionCookie_1)
+% @communication(entity=SPServer; iid=E_S_SPS_IID; line=162; sender=E_S_SPS_Actor; receiver=E_S_SPS_Browser; payload=pair(E_S_SPS_Request, E_S_SPS_SPSessionCookie_1); channel=E_S_SPS_Ch_SPS2B; fact=sent(E_S_SPS_Actor, E_S_SPS_Actor, E_S_SPS_Browser, pair(E_S_SPS_Request, E_S_SPS_SPSessionCookie_1), E_S_SPS_Ch_SPS2B); direction=send)
+% @step_label(entity=SPServer; iid=E_S_SPS_IID; line=162; variable=SL; term=4)
+step step_028_SPServer__line_160(E_S_SPS_Actor, E_S_SPS_Browser, E_S_SPS_Ch_B2SPS, E_S_SPS_Ch_SPS2B, E_S_SPS_IID, E_S_SPS_IdPServer, E_S_SPS_Request, E_S_SPS_SPSessionCookie, E_S_SPS_SPSessionCookie_1, E_S_SPS_User) :=
+	not(dishonest(E_S_SPS_Actor)).
+	rcvd(E_S_SPS_Actor, E_S_SPS_Browser, E_S_SPS_Request, E_S_SPS_Ch_B2SPS).
+	state_SPServer(E_S_SPS_Actor, E_S_SPS_IID, 1, E_S_SPS_Browser, E_S_SPS_IdPServer, E_S_SPS_User, E_S_SPS_Ch_B2SPS, E_S_SPS_Ch_SPS2B, E_S_SPS_Request, E_S_SPS_SPSessionCookie)
+	=[exists E_S_SPS_SPSessionCookie_1]=>
+	sent(E_S_SPS_Actor, E_S_SPS_Actor, E_S_SPS_Browser, pair(E_S_SPS_Request, E_S_SPS_SPSessionCookie_1), E_S_SPS_Ch_SPS2B).
+	state_SPServer(E_S_SPS_Actor, E_S_SPS_IID, 4, E_S_SPS_Browser, E_S_SPS_IdPServer, E_S_SPS_User, E_S_SPS_Ch_B2SPS, E_S_SPS_Ch_SPS2B, E_S_SPS_Request, E_S_SPS_SPSessionCookie_1)
+
+% @communication_guard(entity=SPServer; iid=E_S_SPS_IID; line=165; sender=E_S_SPS_Browser; receiver=E_S_SPS_Actor; payload=pair(sign(inv(pk(E_S_SPS_IdPServer)), pair(E_S_SPS_IdPServer, pair(E_S_SPS_User, E_S_SPS_Actor))), E_S_SPS_SPSessionCookie); channel=E_S_SPS_Ch_B2SPS; fact=rcvd(E_S_SPS_Actor, E_S_SPS_Browser, pair(sign(inv(pk(E_S_SPS_IdPServer)), pair(E_S_SPS_IdPServer, pair(E_S_SPS_User, E_S_SPS_Actor))), E_S_SPS_SPSessionCookie), E_S_SPS_Ch_B2SPS); direction=receive)
+% @assignment(entity=SPServer; iid=E_S_SPS_IID; line=166; variable=Request; term=E_S_SPS_Request)
+% @introduce(entity=SPServer; iid=E_S_SPS_IID; line=166; fact=request(E_S_SPS_Actor, E_S_SPS_User, auth_User_authn_to_SP, E_S_SPS_Request, E_S_SPS_IID))
+% @introduce(entity=SPServer; iid=E_S_SPS_IID; line=166; fact=request(E_S_SPS_Actor, E_S_SPS_User, fresh_User_authn_to_SP, E_S_SPS_Request, E_S_SPS_IID))
+% @step_label(entity=SPServer; iid=E_S_SPS_IID; line=166; variable=SL; term=6)
+step step_029_SPServer__line_165(E_S_SPS_Actor, E_S_SPS_Browser, E_S_SPS_Ch_B2SPS, E_S_SPS_Ch_SPS2B, E_S_SPS_IID, E_S_SPS_IdPServer, E_S_SPS_Request, E_S_SPS_SPSessionCookie, E_S_SPS_User) :=
+	rcvd(E_S_SPS_Actor, E_S_SPS_Browser, pair(sign(inv(pk(E_S_SPS_IdPServer)), pair(E_S_SPS_IdPServer, pair(E_S_SPS_User, E_S_SPS_Actor))), E_S_SPS_SPSessionCookie), E_S_SPS_Ch_B2SPS).
+	state_SPServer(E_S_SPS_Actor, E_S_SPS_IID, 4, E_S_SPS_Browser, E_S_SPS_IdPServer, E_S_SPS_User, E_S_SPS_Ch_B2SPS, E_S_SPS_Ch_SPS2B, E_S_SPS_Request, E_S_SPS_SPSessionCookie)
+	=>
+	request(E_S_SPS_Actor, E_S_SPS_User, auth_User_authn_to_SP, E_S_SPS_Request, E_S_SPS_IID).
+	request(E_S_SPS_Actor, E_S_SPS_User, fresh_User_authn_to_SP, E_S_SPS_Request, E_S_SPS_IID).
+	state_SPServer(E_S_SPS_Actor, E_S_SPS_IID, 6, E_S_SPS_Browser, E_S_SPS_IdPServer, E_S_SPS_User, E_S_SPS_Ch_B2SPS, E_S_SPS_Ch_SPS2B, E_S_SPS_Request, E_S_SPS_SPSessionCookie)
+
+% @communication_guard(entity=IdPServer; iid=E_S_IPS_IID; line=184; sender=E_S_IPS_Browser; receiver=E_S_IPS_Actor; payload=E_S_IPS_Request_1; channel=E_S_IPS_Ch_B2IdPS; fact=rcvd(E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Request_1, E_S_IPS_Ch_B2IdPS); direction=receive)
+% @match(entity=IdPServer; iid=E_S_IPS_IID; line=184; variable=Request; term=E_S_IPS_Request_1)
+% @fresh(entity=IdPServer; iid=E_S_IPS_IID; line=185; variable=IdPSessionCookie; term=E_S_IPS_IdPSessionCookie_1)
+% @fresh(entity=IdPServer; iid=E_S_IPS_IID; line=186; variable=OpId; term=E_S_IPS_OpId_1)
+% @communication(entity=IdPServer; iid=E_S_IPS_IID; line=187; sender=E_S_IPS_Actor; receiver=E_S_IPS_Browser; payload=pair(E_S_IPS_Actor, E_S_IPS_IdPSessionCookie_1); channel=Ch_IdPS2B; fact=sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_Actor, E_S_IPS_IdPSessionCookie_1), Ch_IdPS2B); direction=send)
+% @step_label(entity=IdPServer; iid=E_S_IPS_IID; line=187; variable=SL; term=5)
+step step_030_IdPServer__line_184(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_IID, E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_EIC, E_S_IPS_EICApp, E_S_IPS_IID, E_S_IPS_IdPSessionCookie, E_S_IPS_IdPSessionCookie_1, E_S_IPS_OTP, E_S_IPS_OpId, E_S_IPS_OpId_1, E_S_IPS_Request, E_S_IPS_Request_1, E_S_IPS_SPServer, E_S_IPS_User, E_S_SL, IdPServer, PIN, Request, SPServer, User) :=
+	child(E_S_IID, E_S_IPS_IID).
+	not(dishonest(E_S_IPS_Actor)).
+	rcvd(E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Request_1, E_S_IPS_Ch_B2IdPS).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 1, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_OTP, E_S_IPS_IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=[exists E_S_IPS_IdPSessionCookie_1, E_S_IPS_OpId_1]=>
+	child(E_S_IID, E_S_IPS_IID).
+	sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_Actor, E_S_IPS_IdPSessionCookie_1), Ch_IdPS2B).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 5, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId_1, E_S_IPS_Request_1, E_S_IPS_OTP, E_S_IPS_IdPSessionCookie_1).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=IdPServer; iid=E_S_IPS_IID; line=190; sender=E_S_IPS_Browser; receiver=E_S_IPS_Actor; payload=pair(E_S_IPS_User, E_S_IPS_IdPSessionCookie); channel=E_S_IPS_Ch_B2IdPS; fact=rcvd(E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_User, E_S_IPS_IdPSessionCookie), E_S_IPS_Ch_B2IdPS); direction=receive)
+% @communication(entity=IdPServer; iid=E_S_IPS_IID; line=191; sender=E_S_IPS_Actor; receiver=E_S_IPS_Browser; payload=pair(E_S_IPS_OpId, pair(E_S_IPS_Actor, pair(E_S_IPS_SPServer, E_S_IPS_User))); channel=Ch_IdPS2B; fact=sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_OpId, pair(E_S_IPS_Actor, pair(E_S_IPS_SPServer, E_S_IPS_User))), Ch_IdPS2B); direction=send)
+% @step_label(entity=IdPServer; iid=E_S_IPS_IID; line=191; variable=SL; term=7)
+step step_031_IdPServer__line_190(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_IID, E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_EIC, E_S_IPS_EICApp, E_S_IPS_IID, E_S_IPS_IdPSessionCookie, E_S_IPS_OTP, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_SPServer, E_S_IPS_User, E_S_SL, IdPServer, PIN, Request, SPServer, User) :=
+	child(E_S_IID, E_S_IPS_IID).
+	rcvd(E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_User, E_S_IPS_IdPSessionCookie), E_S_IPS_Ch_B2IdPS).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 5, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_OTP, E_S_IPS_IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_IPS_IID).
+	sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_OpId, pair(E_S_IPS_Actor, pair(E_S_IPS_SPServer, E_S_IPS_User))), Ch_IdPS2B).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 7, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_OTP, E_S_IPS_IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=IdPServer; iid=E_S_IPS_IID; line=194; sender=E_S_IPS_EICApp; receiver=E_S_IPS_Actor; payload=pair(E_S_IPS_OpId, sign(inv(pk(E_S_IPS_EIC)), pair(E_S_IPS_OpId, pair(E_S_IPS_Actor, pair(E_S_IPS_SPServer, E_S_IPS_User))))); channel=E_S_IPS_Ch_EICApp2IdPS; fact=rcvd(E_S_IPS_Actor, E_S_IPS_EICApp, pair(E_S_IPS_OpId, sign(inv(pk(E_S_IPS_EIC)), pair(E_S_IPS_OpId, pair(E_S_IPS_Actor, pair(E_S_IPS_SPServer, E_S_IPS_User))))), E_S_IPS_Ch_EICApp2IdPS); direction=receive)
+% @fresh(entity=IdPServer; iid=E_S_IPS_IID; line=195; variable=OTP; term=E_S_IPS_OTP_1)
+% @communication(entity=IdPServer; iid=E_S_IPS_IID; line=197; sender=E_S_IPS_Actor; receiver=E_S_IPS_EICApp; payload=E_S_IPS_OTP_1; channel=E_S_IPS_Ch_IdPS2EICApp; fact=sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_EICApp, E_S_IPS_OTP_1, E_S_IPS_Ch_IdPS2EICApp); direction=send)
+% @communication(entity=IdPServer; iid=E_S_IPS_IID; line=198; sender=E_S_IPS_Actor; receiver=E_S_IPS_Browser; payload=E_S_IPS_Actor; channel=Ch_IdPS2B; fact=sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Actor, Ch_IdPS2B); direction=send)
+% @step_label(entity=IdPServer; iid=E_S_IPS_IID; line=198; variable=SL; term=11)
+step step_032_IdPServer__line_194(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_IID, E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_EIC, E_S_IPS_EICApp, E_S_IPS_IID, E_S_IPS_IdPSessionCookie, E_S_IPS_OTP, E_S_IPS_OTP_1, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_SPServer, E_S_IPS_User, E_S_SL, IdPServer, PIN, Request, SPServer, User) :=
+	child(E_S_IID, E_S_IPS_IID).
+	rcvd(E_S_IPS_Actor, E_S_IPS_EICApp, pair(E_S_IPS_OpId, sign(inv(pk(E_S_IPS_EIC)), pair(E_S_IPS_OpId, pair(E_S_IPS_Actor, pair(E_S_IPS_SPServer, E_S_IPS_User))))), E_S_IPS_Ch_EICApp2IdPS).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 7, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_OTP, E_S_IPS_IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=[exists E_S_IPS_OTP_1]=>
+	child(E_S_IID, E_S_IPS_IID).
+	sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Actor, Ch_IdPS2B).
+	sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_EICApp, E_S_IPS_OTP_1, E_S_IPS_Ch_IdPS2EICApp).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 11, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_OTP_1, E_S_IPS_IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=IdPServer; iid=E_S_IPS_IID; line=201; sender=E_S_IPS_Browser; receiver=E_S_IPS_Actor; payload=pair(E_S_IPS_OpId, pair(E_S_IPS_OTP, E_S_IPS_IdPSessionCookie)); channel=E_S_IPS_Ch_B2IdPS; fact=rcvd(E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_OpId, pair(E_S_IPS_OTP, E_S_IPS_IdPSessionCookie)), E_S_IPS_Ch_B2IdPS); direction=receive)
+% @communication(entity=IdPServer; iid=E_S_IPS_IID; line=202; sender=E_S_IPS_Actor; receiver=E_S_IPS_Browser; payload=sign(inv(pk(E_S_IPS_Actor)), pair(E_S_IPS_Actor, pair(E_S_IPS_User, E_S_IPS_SPServer))); channel=Ch_IdPS2B; fact=sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, sign(inv(pk(E_S_IPS_Actor)), pair(E_S_IPS_Actor, pair(E_S_IPS_User, E_S_IPS_SPServer))), Ch_IdPS2B); direction=send)
+% @step_label(entity=IdPServer; iid=E_S_IPS_IID; line=202; variable=SL; term=13)
+step step_033_IdPServer__line_201(Browser, Ch_B2IdPS, Ch_B2SPS, Ch_B2U, Ch_EIC2EICApp, Ch_EICApp2EIC, Ch_EICApp2IdPS, Ch_EICApp2U, Ch_IdPS2B, Ch_IdPS2EICApp, Ch_SPS2B, Ch_U2B, Ch_U2EIC, Ch_U2EICApp, EIC, EICApp, E_S_Actor, E_S_IID, E_S_IPS_Actor, E_S_IPS_Browser, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_EIC, E_S_IPS_EICApp, E_S_IPS_IID, E_S_IPS_IdPSessionCookie, E_S_IPS_OTP, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_SPServer, E_S_IPS_User, E_S_SL, IdPServer, PIN, Request, SPServer, User) :=
+	child(E_S_IID, E_S_IPS_IID).
+	rcvd(E_S_IPS_Actor, E_S_IPS_Browser, pair(E_S_IPS_OpId, pair(E_S_IPS_OTP, E_S_IPS_IdPSessionCookie)), E_S_IPS_Ch_B2IdPS).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 11, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_OTP, E_S_IPS_IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+	=>
+	child(E_S_IID, E_S_IPS_IID).
+	sent(E_S_IPS_Actor, E_S_IPS_Actor, E_S_IPS_Browser, sign(inv(pk(E_S_IPS_Actor)), pair(E_S_IPS_Actor, pair(E_S_IPS_User, E_S_IPS_SPServer))), Ch_IdPS2B).
+	state_IdPServer(E_S_IPS_Actor, E_S_IPS_IID, 13, E_S_IPS_EICApp, E_S_IPS_User, E_S_IPS_SPServer, E_S_IPS_Browser, E_S_IPS_EIC, E_S_IPS_Ch_B2IdPS, E_S_IPS_Ch_EICApp2IdPS, E_S_IPS_Ch_IdPS2EICApp, E_S_IPS_OpId, E_S_IPS_Request, E_S_IPS_OTP, E_S_IPS_IdPSessionCookie).
+	state_Session(E_S_Actor, E_S_IID, E_S_SL, EIC, EICApp, User, Browser, SPServer, IdPServer, Ch_B2IdPS, Ch_IdPS2B, Ch_U2B, Ch_B2U, Ch_U2EICApp, Ch_EICApp2U, Ch_EICApp2IdPS, Ch_IdPS2EICApp, Ch_EICApp2EIC, Ch_EIC2EICApp, Ch_B2SPS, Ch_SPS2B, Ch_U2EIC, Request, PIN)
+
+% @communication_guard(entity=EICApp; iid=E_S_EICA_IID; line=225; sender=E_S_EICA_User; receiver=E_S_EICA_Actor; payload=pair(E_S_EICA_OpId_1, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer_1, E_S_EICA_User))); channel=E_S_EICA_Ch_U2EICApp; fact=rcvd(E_S_EICA_Actor, E_S_EICA_User, pair(E_S_EICA_OpId_1, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer_1, E_S_EICA_User))), E_S_EICA_Ch_U2EICApp); direction=receive)
+% @match(entity=EICApp; iid=E_S_EICA_IID; line=225; variable=OpId; term=E_S_EICA_OpId_1)
+% @match(entity=EICApp; iid=E_S_EICA_IID; line=225; variable=SPServer; term=E_S_EICA_SPServer_1)
+% @communication(entity=EICApp; iid=E_S_EICA_IID; line=226; sender=E_S_EICA_Actor; receiver=E_S_EICA_User; payload=E_S_EICA_Actor; channel=E_S_EICA_Ch_EICApp2U; fact=sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_User, E_S_EICA_Actor, E_S_EICA_Ch_EICApp2U); direction=send)
+% @step_label(entity=EICApp; iid=E_S_EICA_IID; line=226; variable=SL; term=3)
+step step_034_EICApp__line_225(E_S_EICA_Actor, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_U2EICApp, E_S_EICA_EIC, E_S_EICA_IID, E_S_EICA_IdPServer, E_S_EICA_OTP, E_S_EICA_OpId, E_S_EICA_OpId_1, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_SPServer, E_S_EICA_SPServer_1, E_S_EICA_User) :=
+	not(dishonest(E_S_EICA_Actor)).
+	rcvd(E_S_EICA_Actor, E_S_EICA_User, pair(E_S_EICA_OpId_1, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer_1, E_S_EICA_User))), E_S_EICA_Ch_U2EICApp).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 1, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId, E_S_EICA_SPServer, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_OTP)
+	=>
+	sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_User, E_S_EICA_Actor, E_S_EICA_Ch_EICApp2U).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 3, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId_1, E_S_EICA_SPServer_1, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_OTP)
+
+% @communication_guard(entity=EICApp; iid=E_S_EICA_IID; line=229; sender=E_S_EICA_User; receiver=E_S_EICA_Actor; payload=E_S_EICA_PIN_1; channel=E_S_EICA_Ch_U2EICApp; fact=rcvd(E_S_EICA_Actor, E_S_EICA_User, E_S_EICA_PIN_1, E_S_EICA_Ch_U2EICApp); direction=receive)
+% @match(entity=EICApp; iid=E_S_EICA_IID; line=229; variable=PIN; term=E_S_EICA_PIN_1)
+% @communication(entity=EICApp; iid=E_S_EICA_IID; line=230; sender=E_S_EICA_Actor; receiver=E_S_EICA_EIC; payload=pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, pair(E_S_EICA_User, E_S_EICA_PIN_1)))); channel=E_S_EICA_Ch_EICApp2EIC; fact=sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_EIC, pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, pair(E_S_EICA_User, E_S_EICA_PIN_1)))), E_S_EICA_Ch_EICApp2EIC); direction=send)
+% @step_label(entity=EICApp; iid=E_S_EICA_IID; line=230; variable=SL; term=5)
+step step_035_EICApp__line_229(E_S_EICA_Actor, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_U2EICApp, E_S_EICA_EIC, E_S_EICA_IID, E_S_EICA_IdPServer, E_S_EICA_OTP, E_S_EICA_OpId, E_S_EICA_PIN, E_S_EICA_PIN_1, E_S_EICA_Request, E_S_EICA_SPServer, E_S_EICA_User) :=
+	rcvd(E_S_EICA_Actor, E_S_EICA_User, E_S_EICA_PIN_1, E_S_EICA_Ch_U2EICApp).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 3, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId, E_S_EICA_SPServer, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_OTP)
+	=>
+	sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_EIC, pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, pair(E_S_EICA_User, E_S_EICA_PIN_1)))), E_S_EICA_Ch_EICApp2EIC).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 5, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId, E_S_EICA_SPServer, E_S_EICA_PIN_1, E_S_EICA_Request, E_S_EICA_OTP)
+
+% @communication_guard(entity=EICApp; iid=E_S_EICA_IID; line=233; sender=E_S_EICA_EIC; receiver=E_S_EICA_Actor; payload=sign(inv(pk(E_S_EICA_EIC)), pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, E_S_EICA_User)))); channel=E_S_EICA_Ch_EIC2EICApp; fact=rcvd(E_S_EICA_Actor, E_S_EICA_EIC, sign(inv(pk(E_S_EICA_EIC)), pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, E_S_EICA_User)))), E_S_EICA_Ch_EIC2EICApp); direction=receive)
+% @communication(entity=EICApp; iid=E_S_EICA_IID; line=234; sender=E_S_EICA_Actor; receiver=E_S_EICA_IdPServer; payload=pair(E_S_EICA_OpId, sign(inv(pk(E_S_EICA_EIC)), pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, E_S_EICA_User))))); channel=E_S_EICA_Ch_EICApp2IdPS; fact=sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_IdPServer, pair(E_S_EICA_OpId, sign(inv(pk(E_S_EICA_EIC)), pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, E_S_EICA_User))))), E_S_EICA_Ch_EICApp2IdPS); direction=send)
+% @step_label(entity=EICApp; iid=E_S_EICA_IID; line=234; variable=SL; term=7)
+step step_036_EICApp__line_233(E_S_EICA_Actor, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_U2EICApp, E_S_EICA_EIC, E_S_EICA_IID, E_S_EICA_IdPServer, E_S_EICA_OTP, E_S_EICA_OpId, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_SPServer, E_S_EICA_User) :=
+	rcvd(E_S_EICA_Actor, E_S_EICA_EIC, sign(inv(pk(E_S_EICA_EIC)), pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, E_S_EICA_User)))), E_S_EICA_Ch_EIC2EICApp).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 5, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId, E_S_EICA_SPServer, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_OTP)
+	=>
+	sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_IdPServer, pair(E_S_EICA_OpId, sign(inv(pk(E_S_EICA_EIC)), pair(E_S_EICA_OpId, pair(E_S_EICA_IdPServer, pair(E_S_EICA_SPServer, E_S_EICA_User))))), E_S_EICA_Ch_EICApp2IdPS).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 7, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId, E_S_EICA_SPServer, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_OTP)
+
+% @communication_guard(entity=EICApp; iid=E_S_EICA_IID; line=237; sender=E_S_EICA_IdPServer; receiver=E_S_EICA_Actor; payload=E_S_EICA_OTP_1; channel=E_S_EICA_Ch_IdPS2EICApp; fact=rcvd(E_S_EICA_Actor, E_S_EICA_IdPServer, E_S_EICA_OTP_1, E_S_EICA_Ch_IdPS2EICApp); direction=receive)
+% @match(entity=EICApp; iid=E_S_EICA_IID; line=237; variable=OTP; term=E_S_EICA_OTP_1)
+% @communication(entity=EICApp; iid=E_S_EICA_IID; line=238; sender=E_S_EICA_Actor; receiver=E_S_EICA_User; payload=E_S_EICA_OTP_1; channel=E_S_EICA_Ch_EICApp2U; fact=sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_User, E_S_EICA_OTP_1, E_S_EICA_Ch_EICApp2U); direction=send)
+% @step_label(entity=EICApp; iid=E_S_EICA_IID; line=238; variable=SL; term=9)
+step step_037_EICApp__line_237(E_S_EICA_Actor, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_U2EICApp, E_S_EICA_EIC, E_S_EICA_IID, E_S_EICA_IdPServer, E_S_EICA_OTP, E_S_EICA_OTP_1, E_S_EICA_OpId, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_SPServer, E_S_EICA_User) :=
+	rcvd(E_S_EICA_Actor, E_S_EICA_IdPServer, E_S_EICA_OTP_1, E_S_EICA_Ch_IdPS2EICApp).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 7, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId, E_S_EICA_SPServer, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_OTP)
+	=>
+	sent(E_S_EICA_Actor, E_S_EICA_Actor, E_S_EICA_User, E_S_EICA_OTP_1, E_S_EICA_Ch_EICApp2U).
+	state_EICApp(E_S_EICA_Actor, E_S_EICA_IID, 9, E_S_EICA_User, E_S_EICA_IdPServer, E_S_EICA_EIC, E_S_EICA_Ch_EICApp2U, E_S_EICA_Ch_U2EICApp, E_S_EICA_Ch_EICApp2IdPS, E_S_EICA_Ch_IdPS2EICApp, E_S_EICA_Ch_EICApp2EIC, E_S_EICA_Ch_EIC2EICApp, E_S_EICA_OpId, E_S_EICA_SPServer, E_S_EICA_PIN, E_S_EICA_Request, E_S_EICA_OTP_1)
+
+% @communication_guard(entity=EIC; iid=E_S_EIC_IID; line=258; sender=E_S_EIC_EICApp; receiver=E_S_EIC_Actor; payload=pair(E_S_EIC_OpId_1, pair(E_S_EIC_IdPServer, pair(E_S_EIC_SPServer_1, pair(E_S_EIC_User, E_S_EIC_PIN)))); channel=E_S_EIC_Ch_EICApp2EIC; fact=rcvd(E_S_EIC_Actor, E_S_EIC_EICApp, pair(E_S_EIC_OpId_1, pair(E_S_EIC_IdPServer, pair(E_S_EIC_SPServer_1, pair(E_S_EIC_User, E_S_EIC_PIN)))), E_S_EIC_Ch_EICApp2EIC); direction=receive)
+% @match(entity=EIC; iid=E_S_EIC_IID; line=258; variable=OpId; term=E_S_EIC_OpId_1)
+% @match(entity=EIC; iid=E_S_EIC_IID; line=258; variable=SPServer; term=E_S_EIC_SPServer_1)
+% @communication_guard(entity=EIC; iid=E_S_EIC_IID; line=258; sender=E_S_EIC_User; receiver=E_S_EIC_Actor; payload=useEIC; channel=E_S_EIC_Ch_U2EIC; fact=rcvd(E_S_EIC_Actor, E_S_EIC_User, useEIC, E_S_EIC_Ch_U2EIC); direction=receive)
+% @communication(entity=EIC; iid=E_S_EIC_IID; line=259; sender=E_S_EIC_Actor; receiver=E_S_EIC_EICApp; payload=sign(inv(pk(E_S_EIC_Actor)), pair(E_S_EIC_OpId_1, pair(E_S_EIC_IdPServer, pair(E_S_EIC_SPServer_1, E_S_EIC_User)))); channel=E_S_EIC_Ch_EIC2EICApp; fact=sent(E_S_EIC_Actor, E_S_EIC_Actor, E_S_EIC_EICApp, sign(inv(pk(E_S_EIC_Actor)), pair(E_S_EIC_OpId_1, pair(E_S_EIC_IdPServer, pair(E_S_EIC_SPServer_1, E_S_EIC_User)))), E_S_EIC_Ch_EIC2EICApp); direction=send)
+% @step_label(entity=EIC; iid=E_S_EIC_IID; line=259; variable=SL; term=3)
+step step_038_EIC__line_258(E_S_EIC_Actor, E_S_EIC_Ch_EIC2EICApp, E_S_EIC_Ch_EICApp2EIC, E_S_EIC_Ch_U2EIC, E_S_EIC_EICApp, E_S_EIC_IID, E_S_EIC_IdPServer, E_S_EIC_OpId, E_S_EIC_OpId_1, E_S_EIC_PIN, E_S_EIC_SPServer, E_S_EIC_SPServer_1, E_S_EIC_User) :=
+	not(dishonest(E_S_EIC_Actor)).
+	rcvd(E_S_EIC_Actor, E_S_EIC_EICApp, pair(E_S_EIC_OpId_1, pair(E_S_EIC_IdPServer, pair(E_S_EIC_SPServer_1, pair(E_S_EIC_User, E_S_EIC_PIN)))), E_S_EIC_Ch_EICApp2EIC).
+	rcvd(E_S_EIC_Actor, E_S_EIC_User, useEIC, E_S_EIC_Ch_U2EIC).
+	state_EIC(E_S_EIC_Actor, E_S_EIC_IID, 1, E_S_EIC_EICApp, E_S_EIC_IdPServer, E_S_EIC_User, E_S_EIC_Ch_EICApp2EIC, E_S_EIC_Ch_EIC2EICApp, E_S_EIC_Ch_U2EIC, E_S_EIC_PIN, E_S_EIC_OpId, E_S_EIC_SPServer)
+	=>
+	sent(E_S_EIC_Actor, E_S_EIC_Actor, E_S_EIC_EICApp, sign(inv(pk(E_S_EIC_Actor)), pair(E_S_EIC_OpId_1, pair(E_S_EIC_IdPServer, pair(E_S_EIC_SPServer_1, E_S_EIC_User)))), E_S_EIC_Ch_EIC2EICApp).
+	state_EIC(E_S_EIC_Actor, E_S_EIC_IID, 3, E_S_EIC_EICApp, E_S_EIC_IdPServer, E_S_EIC_User, E_S_EIC_Ch_EICApp2EIC, E_S_EIC_Ch_EIC2EICApp, E_S_EIC_Ch_U2EIC, E_S_EIC_PIN, E_S_EIC_OpId_1, E_S_EIC_SPServer_1)
+
+section goals:
+
+% @goal(name=auth_User_authn_to_SP; line=329; AM=AM; AR=AR; AW=AW; IID=E_aUatSP_IID)
+attack_state auth_User_authn_to_SP(AM, AR, AW, E_aUatSP_IID) :=
+	not(dishonest(AW)).
+	not(witness(AW, AR, auth_User_authn_to_SP, AM)).
+	request(AR, AW, auth_User_authn_to_SP, AM, E_aUatSP_IID)
+
+% @goal(name=fresh_User_authn_to_SP; line=329; FM=FM; FR=FR; FW=FW; IID1=IID1; IID2=IID2)
+attack_state fresh_User_authn_to_SP(FM, FR, FW, IID1, IID2) :=
+	not(dishonest(FW)).
+	request(FR, FW, fresh_User_authn_to_SP, FM, IID1).
+	request(FR, FW, fresh_User_authn_to_SP, FM, IID2) &
+	not(equal(IID1, IID2))

@@ -1,0 +1,294 @@
+INPUT se.aslan
+SUMMARY ATTACK_FOUND
+  GOAL:  auth_User_authn_to_SP(request1,sps,user,n(IID_5))
+
+DETAILS
+  STRONGLY_TYPED_MODEL
+  BOUNDED_NUMBER_OF_SESSIONS
+  BOUNDED_SEARCH_DEPTH
+  BOUNDED_MESSAGE_DEPTH
+
+BACKEND SATMC VERSION 3.5.7_beta_(November_2014)
+
+COMMENTS
+  SATMC does not allow the intruder to generate fresh terms.
+  As a consequence attacks based on such an ability are not
+  reported.  To partially overcome this, please extend the
+  initial intruder knowledge with suitable constants.
+
+
+
+STATISTICS TIME 284137 ms
+  upperBoundReached         false     boolean
+  graphLeveledOff           no        boolean
+  satSolver                 minisat   solver
+  maxStepsNumber            100       steps
+  stepsNumber               36        steps
+  atomsNumber               25309     atoms
+  clausesNumber             147287    clauses
+  encodingTime              2.114     seconds
+  solvingTime               0.156     seconds
+  if2sateCompilationTime    0.281     seconds
+
+UNUSED:
+{ decompose_17,
+  decompose_19 }
+TRACE:
+0
+  CLAUSES:{ }
+  RULES:  step_002_Environment__line_336(root,0,n(IID_1),n(IID_2))
+1
+  CLAUSES:{ }
+  RULES:  step_003_Session__line_271(browser,ch_B2IdPS_2,ch_B2SPS_2,ch_B2U_2,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2B_2,ch_IdPS2EICApp_2,ch_SPS2B_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,dummy_agent_2,n(IID_2),n(IID_3),n(IID_4),n1(IID_5),n(IID_6),n(IID_7),n(IID_8),idps,pin,request2,sps,user)
+2
+  CLAUSES:{ }
+  RULES:  fake(browser,idps,request2,ch_B2IdPS_2)
+3
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_B2IdPS_2,request2,browser,i,idps),fake(browser,idps,request1,ch_B2IdPS_2) }
+4
+  CLAUSES:{ }
+  RULES:  step_030_IdPServer__line_184(browser,ch_B2IdPS_2,ch_B2SPS_2,ch_B2U_2,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2B_2,ch_IdPS2EICApp_2,ch_SPS2B_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,dummy_agent_2,n(IID_2),idps,browser,ch_B2IdPS_2,ch_EICApp2IdPS_2,ch_IdPS2EICApp_2,eic,eicapp,n(IID_6),dummy_cookie_4,n(E_S_IPS_IdPSessionCookie_1),dummy_otp_3,dummy_opid_3,n(E_S_IPS_OpId_1),dummy_userrequest_2,request2,sps,user,37,idps,pin,request2,sps,user)
+5
+  CLAUSES:{ }
+  RULES:  overhear(idps,browser,pair(idps,n(E_S_IPS_IdPSessionCookie_1)),ch_IdPS2B_2)
+6
+  CLAUSES:{ }
+  RULES:  decompose_4(idps,n(E_S_IPS_IdPSessionCookie_1))
+7
+  CLAUSES:{ }
+  RULES:  { step_004_User__line_51(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,dummy_opid_1),fake(browser,idps,pair(user,n(E_S_IPS_IdPSessionCookie_1)),ch_B2IdPS_2) }
+8
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_B2IdPS_2,pair(user,n(E_S_IPS_IdPSessionCookie_1)),browser,i,idps),fake(browser,user,idps,ch_B2U_2) }
+9
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_B2U_2,idps,browser,i,user),step_031_IdPServer__line_190(browser,ch_B2IdPS_2,ch_B2SPS_2,ch_B2U_2,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2B_2,ch_IdPS2EICApp_2,ch_SPS2B_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,dummy_agent_2,n(IID_2),idps,browser,ch_B2IdPS_2,ch_EICApp2IdPS_2,ch_IdPS2EICApp_2,eic,eicapp,n(IID_6),n(E_S_IPS_IdPSessionCookie_1),dummy_otp_3,n(E_S_IPS_OpId_1),request2,sps,user,37,idps,pin,request2,sps,user) }
+10
+  CLAUSES:{ }
+  RULES:  { overhear(idps,browser,pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user))),ch_IdPS2B_2),step_005_User__line_56(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,dummy_opid_1) }
+11
+  CLAUSES:{ }
+  RULES:  { decompose_16(idps,n(E_S_IPS_OpId_1),sps,user),step_006_User__line_57(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,dummy_opid_1) }
+12
+  CLAUSES:{ }
+  RULES:  fake(browser,user,pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user))),ch_B2U_2)
+13
+  CLAUSES:{ }
+  RULES:  step_001_ACM(ch_B2U_2,pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user))),browser,i,user)
+14
+  CLAUSES:{ }
+  RULES:  step_007_User__line_62(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,dummy_opid_1,n(E_S_IPS_OpId_1))
+15
+  CLAUSES:{ }
+  RULES:  step_008_User__line_63(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,n(E_S_IPS_OpId_1))
+16
+  CLAUSES:{ }
+  RULES:  step_001_ACM(ch_U2EICApp_2,pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user))),user,user,eicapp)
+17
+  CLAUSES:{ }
+  RULES:  step_034_EICApp__line_225(eicapp,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2EICApp_2,ch_U2EICApp_2,eic,n(IID_7),idps,dummy_otp_4,dummy_opid_4,n(E_S_IPS_OpId_1),dummy_pincode_1,dummy_userrequest_3,dummy_agent_3,sps,user)
+18
+  CLAUSES:{ }
+  RULES:  step_001_ACM(ch_EICApp2U_2,eicapp,eicapp,eicapp,user)
+19
+  CLAUSES:{ }
+  RULES:  step_009_User__line_68(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,n(E_S_IPS_OpId_1))
+20
+  CLAUSES:{ }
+  RULES:  step_010_User__line_69(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,n(E_S_IPS_OpId_1))
+21
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_U2B_2,request2,user,user,browser),step_001_ACM(ch_U2EICApp_2,pin,user,user,eicapp),step_011_User__line_73(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,n(E_S_IPS_OpId_1)) }
+22
+  CLAUSES:{ }
+  RULES:  { fake(browser,user,browser,ch_B2U_2),step_035_EICApp__line_229(eicapp,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2EICApp_2,ch_U2EICApp_2,eic,n(IID_7),idps,dummy_otp_4,n(E_S_IPS_OpId_1),dummy_pincode_1,pin,dummy_userrequest_3,sps,user) }
+23
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_B2U_2,browser,browser,i,user),step_001_ACM(ch_EICApp2EIC_2,pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,pair(user,pin)))),eicapp,eicapp,eic),step_001_ACM(ch_U2EIC_2,useEIC,user,user,eic) }
+24
+  CLAUSES:{ }
+  RULES:  step_038_EIC__line_258(eic,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_U2EIC_2,eicapp,n(IID_8),idps,dummy_opid_5,n(E_S_IPS_OpId_1),pin,dummy_agent_4,sps,user)
+25
+  CLAUSES:{ }
+  RULES:  step_001_ACM(ch_EIC2EICApp_2,sign(inv(pk(eic)),pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user)))),eic,eic,eicapp)
+26
+  CLAUSES:{ }
+  RULES:  step_036_EICApp__line_233(eicapp,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2EICApp_2,ch_U2EICApp_2,eic,n(IID_7),idps,dummy_otp_4,n(E_S_IPS_OpId_1),pin,dummy_userrequest_3,sps,user)
+27
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_EICApp2IdPS_2,pair(n(E_S_IPS_OpId_1),sign(inv(pk(eic)),pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user))))),eicapp,eicapp,idps),step_003_Session__line_271(browser,ch_B2IdPS,ch_B2SPS,ch_B2U,ch_EIC2EICApp,ch_EICApp2EIC,ch_EICApp2IdPS,ch_EICApp2U,ch_IdPS2B,ch_IdPS2EICApp,ch_SPS2B,ch_U2B,ch_U2EIC,ch_U2EICApp,eic,eicapp,dummy_agent_1,n(IID_1),n1(IID_3),n1(IID_4),n(IID_5),n1(IID_6),n1(IID_7),n1(IID_8),idps,pin,request1,sps,user) }
+28
+  CLAUSES:{ }
+  RULES:  { fake(browser,sps,request1,ch_B2SPS),fake(browser,idps,request1,ch_B2IdPS),fake(browser,idps,request2,ch_B2IdPS),step_032_IdPServer__line_194(browser,ch_B2IdPS_2,ch_B2SPS_2,ch_B2U_2,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2B_2,ch_IdPS2EICApp_2,ch_SPS2B_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,dummy_agent_2,n(IID_2),idps,browser,ch_B2IdPS_2,ch_EICApp2IdPS_2,ch_IdPS2EICApp_2,eic,eicapp,n(IID_6),n(E_S_IPS_IdPSessionCookie_1),dummy_otp_3,n(E_S_IPS_OTP_1),n(E_S_IPS_OpId_1),request2,sps,user,37,idps,pin,request2,sps,user) }
+29
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_B2IdPS,request2,browser,i,idps),step_001_ACM(ch_B2SPS,request1,browser,i,sps),step_020_Browser__line_104(browser,ch_B2IdPS_2,ch_B2SPS_2,ch_B2U_2,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2B_2,ch_IdPS2EICApp_2,ch_SPS2B_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,dummy_agent_2,browser,ch_B2IdPS_2,ch_B2U_2,n(IID_4),idps,dummy_otp_2,dummy_opid_2,dummy_userrequest_1,request2,sps,user,n(IID_2),37,idps,dummy_cookie_2,pin,request2,sps,dummy_cookie_1,user),fake(browser,idps,pair(n(E_S_IPS_OpId_1),pair(n(E_S_IPS_OTP_1),n(E_S_IPS_IdPSessionCookie_1))),ch_B2IdPS_2) }
+30
+  CLAUSES:{ }
+  RULES:  { step_001_ACM(ch_B2IdPS_2,pair(n(E_S_IPS_OpId_1),pair(n(E_S_IPS_OTP_1),n(E_S_IPS_IdPSessionCookie_1))),browser,i,idps),step_001_ACM(ch_B2SPS_2,request2,browser,browser,sps),step_001_ACM(ch_IdPS2EICApp_2,n(E_S_IPS_OTP_1),idps,idps,eicapp),step_028_SPServer__line_160(sps,browser,ch_B2SPS,ch_SPS2B,n(IID_5),idps,request1,dummy_cookie_3,n(E_S_SPS_SPSessionCookie_1),user),step_030_IdPServer__line_184(browser,ch_B2IdPS,ch_B2SPS,ch_B2U,ch_EIC2EICApp,ch_EICApp2EIC,ch_EICApp2IdPS,ch_EICApp2U,ch_IdPS2B,ch_IdPS2EICApp,ch_SPS2B,ch_U2B,ch_U2EIC,ch_U2EICApp,eic,eicapp,dummy_agent_1,n(IID_1),idps,browser,ch_B2IdPS,ch_EICApp2IdPS,ch_IdPS2EICApp,eic,eicapp,n1(IID_6),dummy_cookie_4,n1(E_S_IPS_IdPSessionCookie_1),dummy_otp_3,dummy_opid_3,n1(E_S_IPS_OpId_1),dummy_userrequest_2,request2,sps,user,37,idps,pin,request1,sps,user) }
+31
+  CLAUSES:{ }
+  RULES:  { overhear(sps,browser,pair(request1,n(E_S_SPS_SPSessionCookie_1)),ch_SPS2B),step_037_EICApp__line_237(eicapp,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2EICApp_2,ch_U2EICApp_2,eic,n(IID_7),idps,dummy_otp_4,n(E_S_IPS_OTP_1),n(E_S_IPS_OpId_1),pin,dummy_userrequest_3,sps,user),step_033_IdPServer__line_201(browser,ch_B2IdPS_2,ch_B2SPS_2,ch_B2U_2,ch_EIC2EICApp_2,ch_EICApp2EIC_2,ch_EICApp2IdPS_2,ch_EICApp2U_2,ch_IdPS2B_2,ch_IdPS2EICApp_2,ch_SPS2B_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,dummy_agent_2,n(IID_2),idps,browser,ch_B2IdPS_2,ch_EICApp2IdPS_2,ch_IdPS2EICApp_2,eic,eicapp,n(IID_6),n(E_S_IPS_IdPSessionCookie_1),n(E_S_IPS_OTP_1),n(E_S_IPS_OpId_1),request2,sps,user,37,idps,pin,request2,sps,user) }
+32
+  CLAUSES:{ }
+  RULES:  { decompose_3(request1,n(E_S_SPS_SPSessionCookie_1)),overhear(idps,browser,sign(inv(pk(idps)),pair(idps,pair(user,sps))),ch_IdPS2B_2),step_001_ACM(ch_EICApp2U_2,n(E_S_IPS_OTP_1),eicapp,eicapp,user) }
+33
+  CLAUSES:{ }
+  RULES:  { fake(browser,sps,pair(sign(inv(pk(idps)),pair(idps,pair(user,sps))),n(E_S_SPS_SPSessionCookie_1)),ch_B2SPS),step_028_SPServer__line_160(sps,browser,ch_B2SPS_2,ch_SPS2B_2,n1(IID_5),idps,request2,dummy_cookie_3,n1(E_S_SPS_SPSessionCookie_1),user),step_012_User__line_78(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,dummy_otp_1,n(E_S_IPS_OTP_1),n(E_S_IPS_OpId_1)) }
+34
+  CLAUSES:{ }
+  RULES:  step_001_ACM(ch_B2SPS,pair(sign(inv(pk(idps)),pair(idps,pair(user,sps))),n(E_S_SPS_SPSessionCookie_1)),browser,i,sps)
+35
+  CLAUSES:{ }
+  RULES:  { overhear(idps,browser,idps,ch_IdPS2B_2),step_001_ACM(ch_B2IdPS,request1,browser,i,idps),step_001_ACM(ch_B2IdPS_2,request1,browser,i,idps),step_001_ACM(ch_SPS2B_2,pair(request2,n1(E_S_SPS_SPSessionCookie_1)),sps,sps,browser),step_029_SPServer__line_165(sps,browser,ch_B2SPS,ch_SPS2B,n(IID_5),idps,request1,n(E_S_SPS_SPSessionCookie_1),user),step_013_User__line_79(user,browser,ch_B2U_2,ch_EICApp2U_2,ch_U2B_2,ch_U2EIC_2,ch_U2EICApp_2,eic,eicapp,n(IID_3),idps,pin,request2,sps,n(E_S_IPS_OTP_1),n(E_S_IPS_OpId_1)) }
+36
+  CLAUSES:{ }
+CLOSED_FINAL_STATE:
+{ true,
+  userOwnComputer,
+  userOwnEIC,
+  userOwnSmartphone,
+  dishonest(i),
+  iknows(0),
+  iknows(browser),
+  iknows(eic),
+  iknows(eicapp),
+  iknows(i),
+  iknows(idps),
+  iknows(sps),
+  iknows(user),
+  iknows(useEIC),
+  iknows(n(E_S_IPS_IdPSessionCookie_1)),
+  iknows(n(E_S_SPS_SPSessionCookie_1)),
+  iknows(stringOK),
+  iknows(n(E_S_IPS_OpId_1)),
+  iknows(n(E_S_IPS_OTP_1)),
+  iknows(pin),
+  iknows(request1),
+  iknows(request2),
+  iknows(inv(pk(i))),
+  iknows(pk(browser)),
+  iknows(pk(eic)),
+  iknows(pk(eicapp)),
+  iknows(pk(i)),
+  iknows(pk(idps)),
+  iknows(pk(sps)),
+  iknows(pk(user)),
+  iknows(pair(idps,n(E_S_IPS_IdPSessionCookie_1))),
+  iknows(pair(user,n(E_S_IPS_IdPSessionCookie_1))),
+  iknows(pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user)))),
+  iknows(pair(n(E_S_IPS_OpId_1),pair(n(E_S_IPS_OTP_1),n(E_S_IPS_IdPSessionCookie_1)))),
+  iknows(pair(request1,n(E_S_SPS_SPSessionCookie_1))),
+  iknows(pair(sign(inv(pk(idps)),pair(idps,pair(user,sps))),n(E_S_SPS_SPSessionCookie_1))),
+  iknows(sign(inv(pk(idps)),pair(idps,pair(user,sps)))),
+  initial_state(init),
+  weakly_authentic(ch_B2IdPS),
+  weakly_authentic(ch_B2IdPS_2),
+  weakly_authentic(ch_B2SPS),
+  weakly_authentic(ch_B2SPS_2),
+  weakly_authentic(ch_EICApp2EIC),
+  weakly_authentic(ch_EICApp2EIC_2),
+  weakly_authentic(ch_EICApp2IdPS),
+  weakly_authentic(ch_EICApp2IdPS_2),
+  weakly_confidential(ch_EIC2EICApp),
+  weakly_confidential(ch_EIC2EICApp_2),
+  weakly_confidential(ch_IdPS2B),
+  weakly_confidential(ch_IdPS2B_2),
+  weakly_confidential(ch_IdPS2EICApp),
+  weakly_confidential(ch_IdPS2EICApp_2),
+  weakly_confidential(ch_SPS2B),
+  weakly_confidential(ch_SPS2B_2),
+  authentic_on(ch_EIC2EICApp,eic),
+  authentic_on(ch_EIC2EICApp_2,eic),
+  authentic_on(ch_EICApp2EIC,eicapp),
+  authentic_on(ch_EICApp2EIC_2,eicapp),
+  authentic_on(ch_EICApp2U,eicapp),
+  authentic_on(ch_EICApp2U_2,eicapp),
+  authentic_on(ch_IdPS2B,idps),
+  authentic_on(ch_IdPS2B_2,idps),
+  authentic_on(ch_IdPS2EICApp,idps),
+  authentic_on(ch_IdPS2EICApp_2,idps),
+  authentic_on(ch_SPS2B,sps),
+  authentic_on(ch_SPS2B_2,sps),
+  authentic_on(ch_U2B,user),
+  authentic_on(ch_U2B_2,user),
+  authentic_on(ch_U2EIC,user),
+  authentic_on(ch_U2EICApp,user),
+  authentic_on(ch_U2EICApp_2,user),
+  authentic_on(ch_U2EIC_2,user),
+  child(0,n(IID_1)),
+  child(0,n(IID_2)),
+  child(dummy_nat,0),
+  child(n(IID_1),n1(IID_3)),
+  child(n(IID_1),n1(IID_4)),
+  child(n(IID_1),n(IID_5)),
+  child(n(IID_1),n1(IID_6)),
+  child(n(IID_1),n1(IID_7)),
+  child(n(IID_1),n1(IID_8)),
+  child(n(IID_2),n(IID_3)),
+  child(n(IID_2),n(IID_4)),
+  child(n(IID_2),n1(IID_5)),
+  child(n(IID_2),n(IID_6)),
+  child(n(IID_2),n(IID_7)),
+  child(n(IID_2),n(IID_8)),
+  confidential_to(ch_B2IdPS,idps),
+  confidential_to(ch_B2IdPS_2,idps),
+  confidential_to(ch_B2SPS,sps),
+  confidential_to(ch_B2SPS_2,sps),
+  confidential_to(ch_EICApp2EIC,eic),
+  confidential_to(ch_EICApp2EIC_2,eic),
+  confidential_to(ch_EICApp2IdPS,idps),
+  confidential_to(ch_EICApp2IdPS_2,idps),
+  confidential_to(ch_EICApp2U,user),
+  confidential_to(ch_EICApp2U_2,user),
+  confidential_to(ch_U2EICApp,eicapp),
+  confidential_to(ch_U2EICApp_2,eicapp),
+  link(ch_B2IdPS,ch_IdPS2B),
+  link(ch_B2IdPS_2,ch_IdPS2B_2),
+  link(ch_B2SPS,ch_SPS2B),
+  link(ch_B2SPS_2,ch_SPS2B_2),
+  link(ch_EICApp2EIC,ch_EIC2EICApp),
+  link(ch_EICApp2EIC_2,ch_EIC2EICApp_2),
+  link(ch_EICApp2IdPS,ch_IdPS2EICApp),
+  link(ch_EICApp2IdPS_2,ch_IdPS2EICApp_2),
+  link(ch_U2B,ch_B2U),
+  link(ch_U2B_2,ch_B2U_2),
+  link(ch_U2EICApp,ch_EICApp2U),
+  link(ch_U2EICApp_2,ch_EICApp2U_2),
+  state_Environment(root,0,6),
+  auth_User_authn_to_SP(request1,sps,user,n(IID_5)),
+  rcvd(browser,sps,pair(request2,n1(E_S_SPS_SPSessionCookie_1)),ch_SPS2B_2),
+  rcvd(i,idps,idps,ch_IdPS2B_2),
+  rcvd(i,idps,pair(idps,n(E_S_IPS_IdPSessionCookie_1)),ch_IdPS2B_2),
+  rcvd(i,idps,pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user))),ch_IdPS2B_2),
+  rcvd(i,idps,sign(inv(pk(idps)),pair(idps,pair(user,sps))),ch_IdPS2B_2),
+  rcvd(i,sps,pair(request1,n(E_S_SPS_SPSessionCookie_1)),ch_SPS2B),
+  rcvd(idps,browser,request1,ch_B2IdPS),
+  rcvd(idps,browser,request1,ch_B2IdPS_2),
+  witness(user,sps,auth_User_authn_to_SP,request2),
+  request(sps,user,auth_User_authn_to_SP,request1,n(IID_5)),
+  request(sps,user,fresh_User_authn_to_SP,request1,n(IID_5)),
+  sent(idps,idps,browser,idps,ch_IdPS2B_2),
+  sent(idps,idps,browser,pair(idps,n1(E_S_IPS_IdPSessionCookie_1)),ch_IdPS2B),
+  sent(idps,idps,browser,pair(idps,n(E_S_IPS_IdPSessionCookie_1)),ch_IdPS2B_2),
+  sent(idps,idps,browser,pair(n(E_S_IPS_OpId_1),pair(idps,pair(sps,user))),ch_IdPS2B_2),
+  sent(idps,idps,browser,sign(inv(pk(idps)),pair(idps,pair(user,sps))),ch_IdPS2B_2),
+  sent(sps,sps,browser,pair(request1,n(E_S_SPS_SPSessionCookie_1)),ch_SPS2B),
+  sent(user,user,browser,user,ch_U2B_2),
+  sent(user,user,browser,n(E_S_IPS_OTP_1),ch_U2B_2),
+  state_SPServer(sps,n(IID_5),6,browser,idps,user,ch_B2SPS,ch_SPS2B,request1,n(E_S_SPS_SPSessionCookie_1)),
+  state_SPServer(sps,n1(IID_5),4,browser,idps,user,ch_B2SPS_2,ch_SPS2B_2,request2,n1(E_S_SPS_SPSessionCookie_1)),
+  state_EIC(eic,n1(IID_8),1,eicapp,idps,user,ch_EICApp2EIC,ch_EIC2EICApp,ch_U2EIC,pin,dummy_opid_5,dummy_agent_4),
+  state_EIC(eic,n(IID_8),3,eicapp,idps,user,ch_EICApp2EIC_2,ch_EIC2EICApp_2,ch_U2EIC_2,pin,n(E_S_IPS_OpId_1),sps),
+  state_Browser(browser,n1(IID_4),1,user,idps,sps,ch_B2U,ch_B2IdPS,dummy_userrequest_1,dummy_opid_2,dummy_otp_2,dummy_cookie_1,dummy_cookie_2),
+  state_Browser(browser,n(IID_4),3,user,idps,sps,ch_B2U_2,ch_B2IdPS_2,request2,dummy_opid_2,dummy_otp_2,dummy_cookie_1,dummy_cookie_2),
+  state_IdPServer(idps,n1(IID_6),5,eicapp,user,sps,browser,eic,ch_B2IdPS,ch_EICApp2IdPS,ch_IdPS2EICApp,n1(E_S_IPS_OpId_1),request2,dummy_otp_3,n1(E_S_IPS_IdPSessionCookie_1)),
+  state_IdPServer(idps,n(IID_6),14,eicapp,user,sps,browser,eic,ch_B2IdPS_2,ch_EICApp2IdPS_2,ch_IdPS2EICApp_2,n(E_S_IPS_OpId_1),request2,n(E_S_IPS_OTP_1),n(E_S_IPS_IdPSessionCookie_1)),
+  state_EICApp(eicapp,n1(IID_7),1,user,idps,eic,ch_EICApp2U,ch_U2EICApp,ch_EICApp2IdPS,ch_IdPS2EICApp,ch_EICApp2EIC,ch_EIC2EICApp,dummy_opid_4,dummy_agent_3,dummy_pincode_1,dummy_userrequest_3,dummy_otp_4),
+  state_EICApp(eicapp,n(IID_7),9,user,idps,eic,ch_EICApp2U_2,ch_U2EICApp_2,ch_EICApp2IdPS_2,ch_IdPS2EICApp_2,ch_EICApp2EIC_2,ch_EIC2EICApp_2,n(E_S_IPS_OpId_1),sps,pin,dummy_userrequest_3,n(E_S_IPS_OTP_1)),
+  state_User(user,n1(IID_3),1,browser,eicapp,sps,idps,eic,ch_U2B,ch_B2U,ch_EICApp2U,ch_U2EICApp,ch_U2EIC,request1,pin,dummy_opid_1,dummy_otp_1),
+  state_User(user,n(IID_3),17,browser,eicapp,sps,idps,eic,ch_U2B_2,ch_B2U_2,ch_EICApp2U_2,ch_U2EICApp_2,ch_U2EIC_2,request2,pin,n(E_S_IPS_OpId_1),n(E_S_IPS_OTP_1)),
+  state_Session(dummy_agent_1,n(IID_1),37,eic,eicapp,user,browser,sps,idps,ch_B2IdPS,ch_IdPS2B,ch_U2B,ch_B2U,ch_U2EICApp,ch_EICApp2U,ch_EICApp2IdPS,ch_IdPS2EICApp,ch_EICApp2EIC,ch_EIC2EICApp,ch_B2SPS,ch_SPS2B,ch_U2EIC,request1,pin),
+  state_Session(dummy_agent_2,n(IID_2),37,eic,eicapp,user,browser,sps,idps,ch_B2IdPS_2,ch_IdPS2B_2,ch_U2B_2,ch_B2U_2,ch_U2EICApp_2,ch_EICApp2U_2,ch_EICApp2IdPS_2,ch_IdPS2EICApp_2,ch_EICApp2EIC_2,ch_EIC2EICApp_2,ch_B2SPS_2,ch_SPS2B_2,ch_U2EIC_2,request2,pin) }
+
